@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -11,9 +13,6 @@
 
   <title>Fichas Individuales</title>
 
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
-  </script>
 
   <style>
 
@@ -21,553 +20,641 @@
       box-sizing: border-box;
     }
 
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 13px;
-      padding: 10px;
-      color: #333;
+
       margin: 0;
+
+      padding: 10px;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        sans-serif;
+
+      font-size: 14px;
+
+      color: #333;
+
       background: #f4f6f9;
+
     }
+
 
     .contenedor {
+
       max-width: 850px;
+
       margin: 0 auto;
+
     }
+
 
     .card {
+
       background: white;
-      padding: 15px;
+
+      padding: 16px;
+
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+      box-shadow:
+        0 2px 8px
+        rgba(0,0,0,0.07);
+
       margin-bottom: 15px;
+
     }
+
 
     h2 {
-      font-size: 16px;
-      margin: 0 0 15px 0;
+
+      margin:
+        0 0 15px 0;
+
+      font-size: 18px;
+
       color: #1a73e8;
+
     }
 
-    h3 {
-      font-size: 14px;
-      margin-top: 0;
-      color: #444;
-    }
 
     label {
+
       display: block;
-      font-weight: bold;
+
       margin-top: 12px;
-      margin-bottom: 5px;
+
+      margin-bottom: 6px;
+
+      font-weight: bold;
+
       color: #555;
+
     }
 
-    select,
-    input {
+
+    select {
+
       width: 100%;
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ddd;
+
+      padding: 11px;
+
+      font-size: 15px;
+
+      border:
+        1px solid #ddd;
+
       border-radius: 8px;
-      background: #fff;
+
+      background: white;
+
     }
 
-    .botonera {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .botonera button {
-      flex: 1;
-      min-width: 120px;
-    }
 
     button {
+
+      width: 100%;
+
       padding: 12px;
-      margin-top: 10px;
-      cursor: pointer;
+
+      margin-top: 12px;
+
       border: none;
+
       border-radius: 8px;
-      font-size: 14px;
+
+      font-size: 15px;
+
       font-weight: bold;
-      transition: background 0.2s;
+
+      cursor: pointer;
+
     }
+
 
     button.primary {
+
       background: #1a73e8;
+
       color: white;
+
     }
+
 
     button.primary:hover {
+
       background: #1557b0;
+
     }
+
 
     button.success {
+
       background: #34a853;
+
       color: white;
+
     }
+
 
     button.success:hover {
+
       background: #2d8f47;
+
     }
+
 
     button.secondary {
+
       background: #e0e0e0;
+
       color: #333;
+
     }
 
-    button.secondary:hover {
-      background: #d0d0d0;
-    }
-
-    button.warning {
-      background: #f9ab00;
-      color: #222;
-    }
 
     button:disabled {
-      opacity: 0.5;
+
+      opacity: .55;
+
       cursor: wait;
+
     }
+
 
     .status {
+
       margin-top: 15px;
+
       padding: 10px;
+
       border-radius: 8px;
-      background: #f0f0f0;
-      white-space: pre-wrap;
-      font-size: 12px;
+
       text-align: center;
+
+      white-space: pre-wrap;
+
+      font-size: 13px;
+
     }
+
 
     .status.ok {
+
       background: #d9ead3;
+
       color: #274e13;
-      border: 1px solid #b7d1a3;
+
+      border:
+        1px solid #b7d1a3;
+
     }
+
 
     .status.err {
+
       background: #f4cccc;
+
       color: #990000;
-      border: 1px solid #eababa;
+
+      border:
+        1px solid #eababa;
+
     }
+
 
     .status.cargando {
+
       background: #e8f0fe;
+
       color: #1a73e8;
-      border: 1px solid #b7d1a3;
+
+      border:
+        1px solid #b7c9ea;
+
     }
+
 
     .oculto {
+
       display: none !important;
+
     }
 
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-
-    .tabs button {
-      flex: 1;
-      margin-top: 0;
-    }
-
-    .tab-activo {
-      background: #1a73e8 !important;
-      color: white !important;
-    }
-
-    .lista-alumnos {
-      margin-top: 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      max-height: 420px;
-      overflow-y: auto;
-    }
-
-    .fila-alumno {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      background: white;
-    }
-
-    .fila-alumno:last-child {
-      border-bottom: none;
-    }
-
-    .fila-alumno input {
-      width: 20px;
-      height: 20px;
-      flex: 0 0 auto;
-    }
-
-    .fila-alumno span {
-      flex: 1;
-      font-size: 14px;
-    }
 
     .seleccionar-todos {
+
       display: flex;
-      gap: 10px;
+
       align-items: center;
-      background: #eef4ff;
-      padding: 10px;
+
+      gap: 10px;
+
+      margin-top: 15px;
+
+      padding: 11px;
+
       border-radius: 8px;
-      margin-top: 12px;
+
+      background: #eef4ff;
+
     }
+
 
     .seleccionar-todos input {
-      width: 20px;
-      height: 20px;
+
+      width: 21px;
+
+      height: 21px;
+
+      flex:
+        0 0 auto;
+
     }
+
 
     .seleccionar-todos label {
+
       margin: 0;
+
+      cursor: pointer;
+
     }
+
+
+    .lista-alumnos {
+
+      margin-top: 10px;
+
+      border:
+        1px solid #ddd;
+
+      border-radius: 8px;
+
+      overflow: hidden;
+
+      max-height: 500px;
+
+      overflow-y: auto;
+
+    }
+
+
+    .fila-alumno {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 11px;
+
+      border-bottom:
+        1px solid #eee;
+
+      background: white;
+
+    }
+
+
+    .fila-alumno:last-child {
+
+      border-bottom: none;
+
+    }
+
+
+    .fila-alumno:hover {
+
+      background: #f8fbff;
+
+    }
+
+
+    .fila-alumno input {
+
+      width: 21px;
+
+      height: 21px;
+
+      flex:
+        0 0 auto;
+
+    }
+
+
+    .datos-alumno {
+
+      flex: 1;
+
+    }
+
+
+    .nombre-alumno {
+
+      font-weight: 600;
+
+    }
+
+
+    .dni-alumno {
+
+      margin-top: 2px;
+
+      font-size: 12px;
+
+      color: #777;
+
+    }
+
+
+    .contador {
+
+      margin-top: 10px;
+
+      font-size: 13px;
+
+      color: #555;
+
+      text-align: right;
+
+    }
+
 
     .progreso-box {
-      margin-top: 15px;
+
+      margin-top: 18px;
+
     }
+
 
     .barra {
+
       width: 100%;
+
       height: 18px;
+
+      margin-top: 8px;
+
       background: #e5e7eb;
+
       border-radius: 10px;
+
       overflow: hidden;
+
     }
+
 
     .barra-interna {
-      height: 100%;
+
       width: 0%;
+
+      height: 100%;
+
       background: #1a73e8;
-      transition: width .2s;
+
+      transition:
+        width .2s;
+
     }
+
 
     .resultado-masivo {
+
       margin-top: 15px;
+
     }
+
 
     .resultado-item {
+
       padding: 8px;
-      border-bottom: 1px solid #eee;
+
+      border-bottom:
+        1px solid #eee;
+
       font-size: 13px;
+
     }
+
 
     .resultado-ok {
+
       color: #1b5e20;
+
     }
+
 
     .resultado-error {
+
       color: #b71c1c;
+
     }
 
-    #panelPdf {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #f4f6f9;
-      z-index: 100;
-      overflow-y: auto;
-      padding: 10px;
-    }
 
-    .toolbar-pdf {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-      position: sticky;
-      top: 0;
-      background: #f4f6f9;
-      padding: 5px 0;
-      z-index: 10;
-    }
+    @media (
+      max-width: 600px
+    ) {
 
-    .toolbar-pdf button {
-      margin-top: 0;
-      flex: 1;
-    }
+      body {
 
-    .pagina-pdf {
-      width: 100%;
-      margin-bottom: 10px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-      padding: 5px;
-    }
+        padding: 6px;
 
-    .pagina-pdf canvas {
-      display: block;
-      max-width: 100%;
-      height: auto !important;
-      margin: 0 auto;
+      }
+
+
+      .card {
+
+        padding: 13px;
+
+      }
+
+
+      .lista-alumnos {
+
+        max-height: 430px;
+
+      }
+
     }
 
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="contenedor">
+
 
   <div class="card">
 
-    <h2>📋 Fichas Individuales</h2>
 
-    <div class="tabs">
-
-      <button
-        id="tabIndividual"
-        class="secondary tab-activo"
-        onclick="mostrarModo('individual')">
-
-        👤 Individual
-
-      </button>
-
-      <button
-        id="tabMasivo"
-        class="secondary"
-        onclick="mostrarModo('masivo')">
-
-        👥 Por curso
-
-      </button>
-
-    </div>
+    <h2>
+      📋 Generar Fichas Individuales
+    </h2>
 
 
-    <!-- ====================================================
-         MODO INDIVIDUAL
-    ===================================================== -->
-
-    <div id="panelIndividual">
-
-      <label>1. Curso y División</label>
-
-      <select
-        id="cursoDivision"
-        onchange="cargarAlumnos()">
-
-        <option value="">
-          Cargando cursos...
-        </option>
-
-      </select>
+    <label>
+      Curso y División
+    </label>
 
 
-      <label>2. Alumno</label>
+    <select
+      id="cursoDivision"
+      onchange="cargarAlumnos()"
+    >
 
-      <select id="alumno">
+      <option value="">
+        Cargando cursos...
+      </option>
 
-        <option value="">
-          Seleccione un alumno
-        </option>
+    </select>
 
-      </select>
-
-
-      <div class="botonera">
-
-        <button
-          id="btnTodo"
-          class="primary"
-          onclick="generarTodo()">
-
-          📄 Generar Ficha
-
-        </button>
-
-
-        <button
-          id="btnMaterias"
-          class="success"
-          onclick="cargarMaterias()">
-
-          📚 Cargar Materias
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- ====================================================
-         MODO MASIVO
-    ===================================================== -->
 
     <div
-      id="panelMasivo"
-      class="oculto">
-
-      <label>Curso y División</label>
-
-      <select
-        id="cursoDivisionMasivo"
-        onchange="cargarAlumnosMasivo()">
-
-        <option value="">
-          Cargando cursos...
-        </option>
-
-      </select>
+      id="bloqueAlumnos"
+      class="oculto"
+    >
 
 
       <div
-        id="bloqueSeleccionMasiva"
-        class="oculto">
+        class="seleccionar-todos"
+      >
+
+        <input
+          type="checkbox"
+          id="checkTodos"
+          onchange="
+            seleccionarTodos(
+              this.checked
+            )
+          "
+        >
 
 
-        <div class="seleccionar-todos">
+        <label
+          for="checkTodos"
+        >
 
-          <input
-            type="checkbox"
-            id="checkTodos"
-            onchange="seleccionarTodos(this.checked)">
+          Seleccionar todos
 
-          <label for="checkTodos">
-            Seleccionar todos
-          </label>
+        </label>
+
+      </div>
+
+
+      <div
+        id="contador"
+        class="contador"
+      >
+
+        0 seleccionados
+
+      </div>
+
+
+      <div
+        id="listaAlumnos"
+        class="lista-alumnos"
+      >
+      </div>
+
+
+      <button
+        id="btnGenerar"
+        class="success"
+        onclick="
+          generarSeleccionados()
+        "
+      >
+
+        📄 Generar seleccionados
+
+      </button>
+
+
+      <div
+        id="progresoBox"
+        class="progreso-box oculto"
+      >
+
+        <div
+          id="textoProgreso"
+        >
+
+          Preparando...
 
         </div>
 
 
         <div
-          id="listaAlumnosMasivo"
-          class="lista-alumnos">
-        </div>
+          class="barra"
+        >
 
-
-        <div class="botonera">
-
-          <button
-            id="btnGenerarSeleccionados"
-            class="success"
-            onclick="generarSeleccionados()">
-
-            📄 Generar seleccionados
-
-          </button>
-
-        </div>
-
-
-        <div
-          id="progresoBox"
-          class="progreso-box oculto">
-
-          <div id="textoProgreso">
-            Preparando...
+          <div
+            id="barraProgreso"
+            class="barra-interna"
+          >
           </div>
 
-          <div class="barra">
-
-            <div
-              id="barraProgreso"
-              class="barra-interna">
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div
-          id="resultadoMasivo"
-          class="resultado-masivo">
         </div>
 
       </div>
 
+
+      <div
+        id="resultadoMasivo"
+        class="resultado-masivo"
+      >
+      </div>
+
+
     </div>
 
 
     <div
+      id="status"
       class="status oculto"
-      id="status">
+    >
     </div>
+
 
   </div>
 
-
-  <!-- ======================================================
-       VISOR PDF
-  ======================================================= -->
-
-  <div
-    id="panelPdf"
-    class="oculto">
-
-    <div class="toolbar-pdf">
-
-      <button
-        class="primary"
-        onclick="descargarPdfLocal()">
-
-        ⬇️ Descargar PDF
-
-      </button>
-
-      <button
-        class="secondary"
-        onclick="cerrarVisor()">
-
-        ✖️ Cerrar
-
-      </button>
-
-    </div>
-
-
-    <div
-      id="estadoRender"
-      class="status cargando">
-
-      Preparando visor...
-
-    </div>
-
-
-    <div id="visorPdf"></div>
-
-  </div>
 
 </div>
 
 
 <script>
 
+
 /************************************************************
- * CONFIGURACIÓN
+ * API
  ************************************************************/
 
 const URL_API =
   "https://script.google.com/macros/s/AKfycbzJigySzNnNNYIFKyIx2JWnAQBu7_O4XcPWpS6tqJRkWiKg_1yRmxDUdpIq0KHJqOJj/exec";
 
 
-let pdfBase64Memoria = "";
+let alumnosCurso =
+  [];
 
-let nombrePdfActual =
-  "Ficha.pdf";
 
-let ultimoDniGenerado = "";
+let procesoActivo =
+  false;
 
-let ultimoNombreAlumno = "";
 
-let alumnosMasivos = [];
+/************************************************************
+ * INICIO
+ ************************************************************/
 
-let procesoMasivoActivo = false;
+window.onload =
+  inicializar;
 
 
 /************************************************************
@@ -575,7 +662,7 @@ let procesoMasivoActivo = false;
  ************************************************************/
 
 function setStatus(
-  msg,
+  mensaje,
   tipo
 ) {
 
@@ -585,84 +672,38 @@ function setStatus(
     );
 
 
-  if (!msg) {
+  if (!mensaje) {
 
     el.classList.add(
       "oculto"
     );
+
+    el.textContent =
+      "";
 
     return;
 
   }
 
 
-  el.classList.remove(
-    "oculto"
-  );
-
-
-  el.textContent =
-    msg;
-
-
   el.className =
     "status " +
     (tipo || "");
 
-}
+
+  el.textContent =
+    mensaje;
 
 
-/************************************************************
- * BOTONES
- ************************************************************/
-
-function bloquearBotones(
-  bloquear
-) {
-
-  document
-    .getElementById(
-      "btnTodo"
-    )
-    .disabled =
-      bloquear;
-
-
-  document
-    .getElementById(
-      "btnMaterias"
-    )
-    .disabled =
-      bloquear;
-
-
-  if (bloquear) {
-
-    document
-      .getElementById(
-        "btnTodo"
-      )
-      .textContent =
-        "⏳ Procesando...";
-
-  }
-
-  else {
-
-    document
-      .getElementById(
-        "btnTodo"
-      )
-      .textContent =
-        "📄 Generar Ficha";
-
-  }
+  el.classList.remove(
+    "oculto"
+  );
 
 }
 
 
 /************************************************************
- * API
+ * LLAMAR API
  ************************************************************/
 
 async function llamarAPI(
@@ -676,41 +717,41 @@ async function llamarAPI(
     );
 
 
-  url.searchParams.append(
+  url.searchParams.set(
     "accion",
     accion
   );
 
 
-  Object.keys(params)
+  Object
+    .entries(params)
     .forEach(
-      key => {
+      ([key, value]) => {
 
-        url.searchParams.append(
+        url.searchParams.set(
           key,
-          params[key]
+          value
         );
 
       }
     );
 
 
-  console.log(
-    "📡 Llamando:",
-    url.toString()
-  );
-
-
   const response =
     await fetch(
-      url.toString()
+      url.toString(),
+      {
+        cache:
+          "no-store"
+      }
     );
 
 
   if (!response.ok) {
 
     throw new Error(
-      `Error HTTP: ${response.status}`
+      "Error HTTP " +
+      response.status
     );
 
   }
@@ -720,15 +761,6 @@ async function llamarAPI(
     await response.text();
 
 
-  console.log(
-    "📥 Respuesta:",
-    texto.substring(
-      0,
-      200
-    )
-  );
-
-
   if (
     !texto
       .trim()
@@ -736,33 +768,21 @@ async function llamarAPI(
   ) {
 
     throw new Error(
-      "El servidor devolvió HTML. Verifica la URL."
+      "El servidor no devolvió una respuesta válida."
     );
 
   }
 
 
-  try {
-
-    return JSON.parse(
-      texto
-    );
-
-  }
-
-  catch(e) {
-
-    throw new Error(
-      "Error al procesar la respuesta del servidor"
-    );
-
-  }
+  return JSON.parse(
+    texto
+  );
 
 }
 
 
 /************************************************************
- * INICIALIZAR
+ * CARGAR CURSOS
  ************************************************************/
 
 async function inicializar() {
@@ -790,244 +810,35 @@ async function inicializar() {
     }
 
 
-    cargarSelectCursos(
-      "cursoDivision",
-      res.cursos
-    );
-
-
-    cargarSelectCursos(
-      "cursoDivisionMasivo",
-      res.cursos
-    );
-
-
-    setStatus(
-      "✅ " +
-      res.cursos.length +
-      " cursos cargados",
-      "ok"
-    );
-
-  }
-
-  catch(err) {
-
-    setStatus(
-      "❌ " +
-      err.message,
-      "err"
-    );
-
-    console.error(
-      err
-    );
-
-  }
-
-}
-
-
-function cargarSelectCursos(
-  id,
-  cursos
-) {
-
-  const sel =
-    document.getElementById(
-      id
-    );
-
-
-  sel.innerHTML =
-    '<option value="">Seleccionar Curso...</option>';
-
-
-  cursos.forEach(
-    c => {
-
-      const op =
-        document.createElement(
-          "option"
-        );
-
-
-      op.value =
-        c;
-
-
-      op.textContent =
-        c;
-
-
-      sel.appendChild(
-        op
-      );
-
-    }
-  );
-
-}
-
-
-/************************************************************
- * CAMBIAR MODO
- ************************************************************/
-
-function mostrarModo(
-  modo
-) {
-
-  const individual =
-    modo ===
-    "individual";
-
-
-  document
-    .getElementById(
-      "panelIndividual"
-    )
-    .classList
-    .toggle(
-      "oculto",
-      !individual
-    );
-
-
-  document
-    .getElementById(
-      "panelMasivo"
-    )
-    .classList
-    .toggle(
-      "oculto",
-      individual
-    );
-
-
-  document
-    .getElementById(
-      "tabIndividual"
-    )
-    .classList
-    .toggle(
-      "tab-activo",
-      individual
-    );
-
-
-  document
-    .getElementById(
-      "tabMasivo"
-    )
-    .classList
-    .toggle(
-      "tab-activo",
-      !individual
-    );
-
-
-  setStatus("");
-
-}
-
-
-/************************************************************
- * INDIVIDUAL - CARGAR ALUMNOS
- ************************************************************/
-
-async function cargarAlumnos() {
-
-  const cursoDiv =
-    document
-      .getElementById(
+    const select =
+      document.getElementById(
         "cursoDivision"
-      )
-      .value;
-
-
-  const selAlu =
-    document.getElementById(
-      "alumno"
-    );
-
-
-  selAlu.innerHTML =
-    '<option value="">Cargando...</option>';
-
-
-  setStatus("");
-
-
-  if (!cursoDiv) {
-
-    selAlu.innerHTML =
-      '<option value="">Seleccione un curso</option>';
-
-    return;
-
-  }
-
-
-  try {
-
-    const res =
-      await llamarAPI(
-        "obtenerAlumnos",
-        {
-          cursoDivision:
-            cursoDiv
-        }
       );
 
 
-    if (!res.ok) {
-
-      throw new Error(
-        res.mensaje
-      );
-
-    }
+    select.innerHTML =
+      '<option value="">Seleccionar Curso...</option>';
 
 
-    selAlu.innerHTML =
-      '<option value="">Seleccione un alumno</option>';
+    res.cursos.forEach(
+      curso => {
 
-
-    if (
-      res.alumnos.length === 0
-    ) {
-
-      selAlu.innerHTML =
-        '<option value="">Sin alumnos</option>';
-
-      return;
-
-    }
-
-
-    res.alumnos.forEach(
-      a => {
-
-        const op =
+        const option =
           document.createElement(
             "option"
           );
 
 
-        op.value =
-          a.dni;
+        option.value =
+          curso;
 
 
-        op.textContent =
-          a.alumno +
-          " (DNI " +
-          a.dni +
-          ")";
+        option.textContent =
+          curso;
 
 
-        selAlu.appendChild(
-          op
+        select.appendChild(
+          option
         );
 
       }
@@ -1035,29 +846,18 @@ async function cargarAlumnos() {
 
 
     setStatus(
-      "✅ " +
-      res.alumnos.length +
-      " alumnos cargados",
+      "✅ Cursos cargados",
       "ok"
     );
 
   }
 
-  catch(err) {
-
-    selAlu.innerHTML =
-      '<option value="">Error</option>';
-
+  catch(error) {
 
     setStatus(
       "❌ " +
-      err.message,
+      error.message,
       "err"
-    );
-
-
-    console.error(
-      err
     );
 
   }
@@ -1066,20 +866,12 @@ async function cargarAlumnos() {
 
 
 /************************************************************
- * INDIVIDUAL - GENERAR
+ * CARGAR ALUMNOS DEL CURSO
  ************************************************************/
 
-async function generarTodo() {
+async function cargarAlumnos() {
 
-  const dni =
-    document
-      .getElementById(
-        "alumno"
-      )
-      .value;
-
-
-  const cursoDiv =
+  const curso =
     document
       .getElementById(
         "cursoDivision"
@@ -1087,341 +879,26 @@ async function generarTodo() {
       .value;
 
 
-  if (
-    !dni ||
-    !cursoDiv
-  ) {
-
-    return setStatus(
-      "⚠️ Seleccioná Curso y Alumno.",
-      "err"
-    );
-
-  }
-
-
-  ultimoDniGenerado =
-    dni;
-
-
-  const selAlu =
-    document.getElementById(
-      "alumno"
-    );
-
-
-  const nombreCompleto =
-    selAlu.options[
-      selAlu.selectedIndex
-    ]?.text || "";
-
-
-  ultimoNombreAlumno =
-    nombreCompleto
-      .split(
-        " (DNI"
-      )[0] ||
-    "";
-
-
-  setStatus(
-    "🔄 Generando ficha...",
-    "cargando"
-  );
-
-
-  bloquearBotones(
-    true
-  );
-
-
-  pdfBase64Memoria =
-    "";
-
-
-  try {
-
-    const res =
-      await llamarAPI(
-        "generarFicha",
-        {
-          dni:
-            dni
-        }
-      );
-
-
-    if (!res.ok) {
-
-      throw new Error(
-        res.mensaje
-      );
-
-    }
-
-
-    /*
-     * generarFicha ya completa:
-     * datos personales
-     * asistencia
-     * notas
-     * previas/equivalencias
-     * materias
-     * y devuelve el PDF
-     */
-
-
-    pdfBase64Memoria =
-      res.base64;
-
-
-    nombrePdfActual =
-      res.nombreArchivo ||
-      "Ficha.pdf";
-
-
-    setStatus(
-      "✅ Ficha completa. Abriendo visor...",
-      "ok"
-    );
-
-
-    await mostrarVisorPdf(
-      pdfBase64Memoria
-    );
-
-
-    bloquearBotones(
-      false
-    );
-
-  }
-
-  catch(err) {
-
-    bloquearBotones(
-      false
-    );
-
-
-    setStatus(
-      "❌ " +
-      err.message,
-      "err"
-    );
-
-
-    console.error(
-      err
-    );
-
-  }
-
-}
-
-
-/************************************************************
- * INDIVIDUAL - CARGAR MATERIAS
- *
- * Se conserva por compatibilidad.
- ************************************************************/
-
-async function cargarMaterias() {
-
-  let dni =
+  const bloque =
     document
       .getElementById(
-        "alumno"
-      )
-      .value;
-
-
-  if (!dni) {
-
-    dni =
-      ultimoDniGenerado;
-
-  }
-
-
-  if (!dni) {
-
-    return setStatus(
-      "⚠️ Primero generá una ficha o seleccioná un alumno.",
-      "err"
-    );
-
-  }
-
-
-  setStatus(
-    "🔄 Cargando materias...",
-    "cargando"
-  );
-
-
-  document
-    .getElementById(
-      "btnMaterias"
-    )
-    .disabled =
-      true;
-
-
-  document
-    .getElementById(
-      "btnMaterias"
-    )
-    .textContent =
-      "⏳ Cargando...";
-
-
-  try {
-
-    const res =
-      await llamarAPI(
-        "cargarMaterias"
+        "bloqueAlumnos"
       );
-
-
-    document
-      .getElementById(
-        "btnMaterias"
-      )
-      .disabled =
-        false;
-
-
-    document
-      .getElementById(
-        "btnMaterias"
-      )
-      .textContent =
-        "📚 Cargar Materias";
-
-
-    if (!res.ok) {
-
-      throw new Error(
-        res.mensaje
-      );
-
-    }
-
-
-    setStatus(
-      "✅ " +
-      res.mensaje +
-      ". Actualizando PDF...",
-      "cargando"
-    );
-
-
-    const resPDF =
-      await llamarAPI(
-        "exportarPDF"
-      );
-
-
-    if (resPDF.ok) {
-
-      pdfBase64Memoria =
-        resPDF.base64;
-
-
-      nombrePdfActual =
-        resPDF.nombreArchivo ||
-        "Ficha.pdf";
-
-
-      setStatus(
-        "✅ PDF actualizado con materias",
-        "ok"
-      );
-
-
-      await mostrarVisorPdf(
-        pdfBase64Memoria
-      );
-
-    }
-
-    else {
-
-      setStatus(
-        "⚠️ No se pudo actualizar el PDF",
-        "err"
-      );
-
-    }
-
-  }
-
-  catch(err) {
-
-    document
-      .getElementById(
-        "btnMaterias"
-      )
-      .disabled =
-        false;
-
-
-    document
-      .getElementById(
-        "btnMaterias"
-      )
-      .textContent =
-        "📚 Cargar Materias";
-
-
-    setStatus(
-      "❌ " +
-      err.message,
-      "err"
-    );
-
-
-    console.error(
-      err
-    );
-
-  }
-
-}
-
-
-/************************************************************
- * MASIVO - CARGAR ALUMNOS
- ************************************************************/
-
-async function cargarAlumnosMasivo() {
-
-  const curso =
-    document
-      .getElementById(
-        "cursoDivisionMasivo"
-      )
-      .value;
 
 
   const lista =
-    document.getElementById(
-      "listaAlumnosMasivo"
-    );
-
-
-  const bloque =
-    document.getElementById(
-      "bloqueSeleccionMasiva"
-    );
+    document
+      .getElementById(
+        "listaAlumnos"
+      );
 
 
   document
     .getElementById(
       "resultadoMasivo"
     )
-    .innerHTML = "";
+    .innerHTML =
+      "";
 
 
   document
@@ -1430,6 +907,19 @@ async function cargarAlumnosMasivo() {
     )
     .checked =
       false;
+
+
+  document
+    .getElementById(
+      "progresoBox"
+    )
+    .classList
+    .add(
+      "oculto"
+    );
+
+
+  actualizarContador();
 
 
   if (!curso) {
@@ -1443,13 +933,13 @@ async function cargarAlumnosMasivo() {
   }
 
 
-  setStatus(
-    "🔄 Cargando alumnos...",
-    "cargando"
-  );
-
-
   try {
+
+    setStatus(
+      "🔄 Cargando alumnos...",
+      "cargando"
+    );
+
 
     const res =
       await llamarAPI(
@@ -1470,7 +960,7 @@ async function cargarAlumnosMasivo() {
     }
 
 
-    alumnosMasivos =
+    alumnosCurso =
       res.alumnos || [];
 
 
@@ -1478,8 +968,8 @@ async function cargarAlumnosMasivo() {
       "";
 
 
-    alumnosMasivos.forEach(
-      (a, index) => {
+    alumnosCurso.forEach(
+      (alumno, index) => {
 
         const fila =
           document.createElement(
@@ -1496,17 +986,38 @@ async function cargarAlumnosMasivo() {
           <input
             type="checkbox"
             class="check-alumno"
-            id="alu_${index}"
+            id="alumno_${index}"
             data-index="${index}"
+            onchange="actualizarContador()"
           >
 
-          <span>
-            ${escaparHtml(a.alumno)}
-            <br>
-            <small>
-              DNI ${escaparHtml(a.dni)}
-            </small>
-          </span>
+          <label
+            for="alumno_${index}"
+            class="datos-alumno"
+          >
+
+            <div
+              class="nombre-alumno"
+            >
+
+              ${escaparHtml(
+                alumno.alumno
+              )}
+
+            </div>
+
+            <div
+              class="dni-alumno"
+            >
+
+              DNI:
+              ${escaparHtml(
+                alumno.dni
+              )}
+
+            </div>
+
+          </label>
 
         `;
 
@@ -1524,16 +1035,19 @@ async function cargarAlumnosMasivo() {
     );
 
 
+    actualizarContador();
+
+
     setStatus(
       "✅ " +
-      alumnosMasivos.length +
+      alumnosCurso.length +
       " alumnos cargados",
       "ok"
     );
 
   }
 
-  catch(err) {
+  catch(error) {
 
     bloque.classList.add(
       "oculto"
@@ -1542,7 +1056,7 @@ async function cargarAlumnosMasivo() {
 
     setStatus(
       "❌ " +
-      err.message,
+      error.message,
       "err"
     );
 
@@ -1552,7 +1066,7 @@ async function cargarAlumnosMasivo() {
 
 
 /************************************************************
- * MASIVO - SELECCIONAR TODOS
+ * SELECCIONAR TODOS
  ************************************************************/
 
 function seleccionarTodos(
@@ -1572,16 +1086,67 @@ function seleccionarTodos(
       }
     );
 
+
+  actualizarContador();
+
 }
 
 
 /************************************************************
- * MASIVO - ALUMNOS SELECCIONADOS
+ * CONTADOR
+ ************************************************************/
+
+function actualizarContador() {
+
+  const checks =
+    document.querySelectorAll(
+      ".check-alumno"
+    );
+
+
+  const seleccionados =
+    document.querySelectorAll(
+      ".check-alumno:checked"
+    );
+
+
+  document
+    .getElementById(
+      "contador"
+    )
+    .textContent =
+
+      seleccionados.length +
+      " seleccionados de " +
+      checks.length;
+
+
+  const checkTodos =
+    document.getElementById(
+      "checkTodos"
+    );
+
+
+  if (
+    checks.length > 0
+  ) {
+
+    checkTodos.checked =
+      seleccionados.length ===
+      checks.length;
+
+  }
+
+}
+
+
+/************************************************************
+ * OBTENER SELECCIONADOS
  ************************************************************/
 
 function obtenerSeleccionados() {
 
-  const salida =
+  const resultado =
     [];
 
 
@@ -1599,11 +1164,11 @@ function obtenerSeleccionados() {
 
 
         if (
-          alumnosMasivos[index]
+          alumnosCurso[index]
         ) {
 
-          salida.push(
-            alumnosMasivos[index]
+          resultado.push(
+            alumnosCurso[index]
           );
 
         }
@@ -1612,19 +1177,19 @@ function obtenerSeleccionados() {
     );
 
 
-  return salida;
+  return resultado;
 
 }
 
 
 /************************************************************
- * MASIVO - GENERAR
+ * GENERAR FICHAS
  ************************************************************/
 
 async function generarSeleccionados() {
 
   if (
-    procesoMasivoActivo
+    procesoActivo
   ) {
 
     return;
@@ -1655,8 +1220,7 @@ async function generarSeleccionados() {
 
       "Se generarán " +
       seleccionados.length +
-      " fichas.\n\n" +
-      "El proceso se hará una por una.\n" +
+      " ficha(s).\n\n" +
       "¿Continuar?"
 
     );
@@ -1669,31 +1233,23 @@ async function generarSeleccionados() {
   }
 
 
-  procesoMasivoActivo =
+  procesoActivo =
     true;
 
 
   const boton =
     document.getElementById(
-      "btnGenerarSeleccionados"
+      "btnGenerar"
     );
 
 
-  boton.disabled =
-    true;
-
-
-  boton.textContent =
-    "⏳ Generando...";
-
-
-  const progresoBox =
+  const progreso =
     document.getElementById(
       "progresoBox"
     );
 
 
-  const texto =
+  const textoProgreso =
     document.getElementById(
       "textoProgreso"
     );
@@ -1711,17 +1267,25 @@ async function generarSeleccionados() {
     );
 
 
-  progresoBox.classList.remove(
+  boton.disabled =
+    true;
+
+
+  boton.textContent =
+    "⏳ Generando...";
+
+
+  progreso.classList.remove(
     "oculto"
   );
 
 
-  resultado.innerHTML =
-    "";
-
-
   barra.style.width =
     "0%";
+
+
+  resultado.innerHTML =
+    "";
 
 
   let correctos =
@@ -1746,7 +1310,8 @@ async function generarSeleccionados() {
       i + 1;
 
 
-    texto.textContent =
+    textoProgreso.textContent =
+
       "Generando " +
       numero +
       " de " +
@@ -1756,13 +1321,16 @@ async function generarSeleccionados() {
 
 
     setStatus(
+
       "🔄 " +
       numero +
       " de " +
       seleccionados.length +
-      " - " +
+      "\n" +
       alumno.alumno,
+
       "cargando"
+
     );
 
 
@@ -1791,56 +1359,54 @@ async function generarSeleccionados() {
       if (!res.base64) {
 
         throw new Error(
-          "El servidor no devolvió el PDF."
+          "No se recibió el PDF."
         );
 
       }
 
 
-      /*
-       * Descargar solamente la ficha
-       * recién generada.
-       */
-
       descargarBase64(
+
         res.base64,
+
         res.nombreArchivo ||
         (
           "Ficha - " +
           alumno.alumno +
           ".pdf"
         )
+
       );
 
 
       correctos++;
 
 
-      agregarResultadoMasivo(
+      agregarResultado(
+
         "✅ " +
         alumno.alumno,
+
         true
+
       );
 
     }
 
-    catch(err) {
+    catch(error) {
 
       errores++;
 
 
-      agregarResultadoMasivo(
+      agregarResultado(
+
         "❌ " +
         alumno.alumno +
         " — " +
-        err.message,
+        error.message,
+
         false
-      );
 
-
-      console.error(
-        alumno,
-        err
       );
 
     }
@@ -1862,7 +1428,7 @@ async function generarSeleccionados() {
 
 
     /*
-     * Pequeña pausa entre alumnos.
+     * Pausa pequeña antes del siguiente alumno.
      */
 
     if (
@@ -1879,20 +1445,23 @@ async function generarSeleccionados() {
   }
 
 
-  texto.textContent =
+  textoProgreso.textContent =
     "Proceso terminado";
 
 
   setStatus(
-    "✅ Proceso terminado.\n" +
+
+    "✅ Proceso terminado\n\n" +
     "Generadas: " +
     correctos +
     "\n" +
     "Con error: " +
     errores,
-    errores
+
+    errores > 0
       ? "err"
       : "ok"
+
   );
 
 
@@ -1904,22 +1473,22 @@ async function generarSeleccionados() {
     "📄 Generar seleccionados";
 
 
-  procesoMasivoActivo =
+  procesoActivo =
     false;
 
 }
 
 
 /************************************************************
- * RESULTADO MASIVO
+ * RESULTADOS
  ************************************************************/
 
-function agregarResultadoMasivo(
+function agregarResultado(
   texto,
-  ok
+  correcto
 ) {
 
-  const cont =
+  const contenedor =
     document.getElementById(
       "resultadoMasivo"
     );
@@ -1934,7 +1503,7 @@ function agregarResultadoMasivo(
   div.className =
     "resultado-item " +
     (
-      ok
+      correcto
         ? "resultado-ok"
         : "resultado-error"
     );
@@ -1944,7 +1513,7 @@ function agregarResultadoMasivo(
     texto;
 
 
-  cont.appendChild(
+  contenedor.appendChild(
     div
   );
 
@@ -1952,401 +1521,12 @@ function agregarResultadoMasivo(
 
 
 /************************************************************
- * DESCARGAR PDF MASIVO
+ * DESCARGAR PDF
  ************************************************************/
 
 function descargarBase64(
   base64,
-  nombre
-) {
-
-  const bytes =
-    base64ABytes(
-      base64
-    );
-
-
-  const blob =
-    new Blob(
-      [bytes],
-      {
-        type:
-          "application/pdf"
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const link =
-    document.createElement(
-      "a"
-    );
-
-
-  link.href =
-    url;
-
-
-  link.download =
-    nombre;
-
-
-  document.body.appendChild(
-    link
-  );
-
-
-  link.click();
-
-
-  document.body.removeChild(
-    link
-  );
-
-
-  setTimeout(
-    () => {
-
-      URL.revokeObjectURL(
-        url
-      );
-
-    },
-    1000
-  );
-
-}
-
-
-/************************************************************
- * ESPERA
- ************************************************************/
-
-function esperar(
-  ms
-) {
-
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
-  );
-
-}
-
-
-/************************************************************
- * VISOR PDF
- ************************************************************/
-
-async function mostrarVisorPdf(
-  base64
-) {
-
-  document
-    .getElementById(
-      "panelPdf"
-    )
-    .classList
-    .remove(
-      "oculto"
-    );
-
-
-  document
-    .getElementById(
-      "estadoRender"
-    )
-    .classList
-    .remove(
-      "oculto"
-    );
-
-
-  document
-    .getElementById(
-      "estadoRender"
-    )
-    .textContent =
-      "Abriendo PDF...";
-
-
-  const bytes =
-    base64ABytes(
-      base64
-    );
-
-
-  pdfjsLib
-    .GlobalWorkerOptions
-    .workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-
-  try {
-
-    const pdf =
-      await pdfjsLib
-        .getDocument({
-          data:
-            bytes
-        })
-        .promise;
-
-
-    const contenedor =
-      document.getElementById(
-        "visorPdf"
-      );
-
-
-    contenedor.innerHTML =
-      "";
-
-
-    for (
-      let num = 1;
-      num <= pdf.numPages;
-      num++
-    ) {
-
-      document
-        .getElementById(
-          "estadoRender"
-        )
-        .textContent =
-          `Página ${num} de ${pdf.numPages}...`;
-
-
-      const pagina =
-        await pdf.getPage(
-          num
-        );
-
-
-      const viewportBase =
-        pagina.getViewport({
-          scale:
-            1
-        });
-
-
-      const ancho =
-        contenedor.clientWidth -
-        10;
-
-
-      const escala =
-        ancho /
-        viewportBase.width;
-
-
-      const viewport =
-        pagina.getViewport({
-          scale:
-            escala
-        });
-
-
-      const envoltorio =
-        document.createElement(
-          "div"
-        );
-
-
-      envoltorio.className =
-        "pagina-pdf";
-
-
-      const canvas =
-        document.createElement(
-          "canvas"
-        );
-
-
-      const contexto =
-        canvas.getContext(
-          "2d"
-        );
-
-
-      const ratio =
-        window.devicePixelRatio ||
-        1;
-
-
-      canvas.width =
-        viewport.width *
-        ratio;
-
-
-      canvas.height =
-        viewport.height *
-        ratio;
-
-
-      canvas.style.width =
-        viewport.width +
-        "px";
-
-
-      canvas.style.height =
-        viewport.height +
-        "px";
-
-
-      contexto.scale(
-        ratio,
-        ratio
-      );
-
-
-      envoltorio.appendChild(
-        canvas
-      );
-
-
-      contenedor.appendChild(
-        envoltorio
-      );
-
-
-      await pagina.render({
-
-        canvasContext:
-          contexto,
-
-        viewport:
-          viewport
-
-      }).promise;
-
-    }
-
-
-    document
-      .getElementById(
-        "estadoRender"
-      )
-      .classList
-      .add(
-        "oculto"
-      );
-
-
-    setStatus(
-      "✅ PDF visible - " +
-      pdf.numPages +
-      " páginas",
-      "ok"
-    );
-
-  }
-
-  catch(e) {
-
-    document
-      .getElementById(
-        "estadoRender"
-      )
-      .textContent =
-        "❌ Error al visualizar";
-
-
-    console.error(
-      e
-    );
-
-  }
-
-}
-
-
-/************************************************************
- * DESCARGAR PDF INDIVIDUAL
- ************************************************************/
-
-function descargarPdfLocal() {
-
-  if (
-    !pdfBase64Memoria
-  ) {
-
-    setStatus(
-      "⚠️ No hay PDF",
-      "err"
-    );
-
-    return;
-
-  }
-
-
-  descargarBase64(
-    pdfBase64Memoria,
-    nombrePdfActual
-  );
-
-
-  setStatus(
-    "✅ Descargando: " +
-    nombrePdfActual,
-    "ok"
-  );
-
-}
-
-
-/************************************************************
- * CERRAR VISOR
- ************************************************************/
-
-function cerrarVisor() {
-
-  document
-    .getElementById(
-      "panelPdf"
-    )
-    .classList
-    .add(
-      "oculto"
-    );
-
-
-  document
-    .getElementById(
-      "visorPdf"
-    )
-    .innerHTML =
-      "";
-
-
-  bloquearBotones(
-    false
-  );
-
-
-  setStatus(
-    "✅ Visor cerrado",
-    "ok"
-  );
-
-}
-
-
-/************************************************************
- * BASE64
- ************************************************************/
-
-function base64ABytes(
-  base64
+  nombreArchivo
 ) {
 
   const binario =
@@ -2375,7 +1555,81 @@ function base64ABytes(
   }
 
 
-  return bytes;
+  const blob =
+    new Blob(
+      [bytes],
+      {
+        type:
+          "application/pdf"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const enlace =
+    document.createElement(
+      "a"
+    );
+
+
+  enlace.href =
+    url;
+
+
+  enlace.download =
+    nombreArchivo;
+
+
+  document.body.appendChild(
+    enlace
+  );
+
+
+  enlace.click();
+
+
+  document.body.removeChild(
+    enlace
+  );
+
+
+  setTimeout(
+    () => {
+
+      URL.revokeObjectURL(
+        url
+      );
+
+    },
+    1500
+  );
+
+}
+
+
+/************************************************************
+ * ESPERA
+ ************************************************************/
+
+function esperar(
+  milisegundos
+) {
+
+  return new Promise(
+    resolve => {
+
+      setTimeout(
+        resolve,
+        milisegundos
+      );
+
+    }
+  );
 
 }
 
@@ -2415,14 +1669,9 @@ function escaparHtml(
 }
 
 
-/************************************************************
- * INICIO
- ************************************************************/
-
-window.onload =
-  inicializar;
-
 </script>
 
+
 </body>
+
 </html>
