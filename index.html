@@ -1,1677 +1,377 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0,
-             maximum-scale=1.0, user-scalable=no"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Fichas Individuales</title>
-
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-
-    body {
-
-      margin: 0;
-
-      padding: 10px;
-
-      font-family:
-        system-ui,
-        -apple-system,
-        sans-serif;
-
-      font-size: 14px;
-
-      color: #333;
-
-      background: #f4f6f9;
-
-    }
-
-
-    .contenedor {
-
-      max-width: 850px;
-
-      margin: 0 auto;
-
-    }
-
-
-    .card {
-
-      background: white;
-
-      padding: 16px;
-
-      border-radius: 12px;
-
-      box-shadow:
-        0 2px 8px
-        rgba(0,0,0,0.07);
-
-      margin-bottom: 15px;
-
-    }
-
-
-    h2 {
-
-      margin:
-        0 0 15px 0;
-
-      font-size: 18px;
-
-      color: #1a73e8;
-
-    }
-
-
-    label {
-
-      display: block;
-
-      margin-top: 12px;
-
-      margin-bottom: 6px;
-
-      font-weight: bold;
-
-      color: #555;
-
-    }
-
-
-    select {
-
-      width: 100%;
-
-      padding: 11px;
-
-      font-size: 15px;
-
-      border:
-        1px solid #ddd;
-
-      border-radius: 8px;
-
-      background: white;
-
-    }
-
-
-    button {
-
-      width: 100%;
-
-      padding: 12px;
-
-      margin-top: 12px;
-
-      border: none;
-
-      border-radius: 8px;
-
-      font-size: 15px;
-
-      font-weight: bold;
-
-      cursor: pointer;
-
-    }
-
-
-    button.primary {
-
-      background: #1a73e8;
-
-      color: white;
-
-    }
-
-
-    button.primary:hover {
-
-      background: #1557b0;
-
-    }
-
-
-    button.success {
-
-      background: #34a853;
-
-      color: white;
-
-    }
-
-
-    button.success:hover {
-
-      background: #2d8f47;
-
-    }
-
-
-    button.secondary {
-
-      background: #e0e0e0;
-
-      color: #333;
-
-    }
-
-
-    button:disabled {
-
-      opacity: .55;
-
-      cursor: wait;
-
-    }
-
-
-    .status {
-
-      margin-top: 15px;
-
-      padding: 10px;
-
-      border-radius: 8px;
-
-      text-align: center;
-
-      white-space: pre-wrap;
-
-      font-size: 13px;
-
-    }
-
-
-    .status.ok {
-
-      background: #d9ead3;
-
-      color: #274e13;
-
-      border:
-        1px solid #b7d1a3;
-
-    }
-
-
-    .status.err {
-
-      background: #f4cccc;
-
-      color: #990000;
-
-      border:
-        1px solid #eababa;
-
-    }
-
-
-    .status.cargando {
-
-      background: #e8f0fe;
-
-      color: #1a73e8;
-
-      border:
-        1px solid #b7c9ea;
-
-    }
-
-
-    .oculto {
-
-      display: none !important;
-
-    }
-
-
-    .seleccionar-todos {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      margin-top: 15px;
-
-      padding: 11px;
-
-      border-radius: 8px;
-
-      background: #eef4ff;
-
-    }
-
-
-    .seleccionar-todos input {
-
-      width: 21px;
-
-      height: 21px;
-
-      flex:
-        0 0 auto;
-
-    }
-
-
-    .seleccionar-todos label {
-
-      margin: 0;
-
-      cursor: pointer;
-
-    }
-
-
-    .lista-alumnos {
-
-      margin-top: 10px;
-
-      border:
-        1px solid #ddd;
-
-      border-radius: 8px;
-
-      overflow: hidden;
-
-      max-height: 500px;
-
-      overflow-y: auto;
-
-    }
-
-
-    .fila-alumno {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      padding: 11px;
-
-      border-bottom:
-        1px solid #eee;
-
-      background: white;
-
-    }
-
-
-    .fila-alumno:last-child {
-
-      border-bottom: none;
-
-    }
-
-
-    .fila-alumno:hover {
-
-      background: #f8fbff;
-
-    }
-
-
-    .fila-alumno input {
-
-      width: 21px;
-
-      height: 21px;
-
-      flex:
-        0 0 auto;
-
-    }
-
-
-    .datos-alumno {
-
-      flex: 1;
-
-    }
-
-
-    .nombre-alumno {
-
-      font-weight: 600;
-
-    }
-
-
-    .dni-alumno {
-
-      margin-top: 2px;
-
-      font-size: 12px;
-
-      color: #777;
-
-    }
-
-
-    .contador {
-
-      margin-top: 10px;
-
-      font-size: 13px;
-
-      color: #555;
-
-      text-align: right;
-
-    }
-
-
-    .progreso-box {
-
-      margin-top: 18px;
-
-    }
-
-
-    .barra {
-
-      width: 100%;
-
-      height: 18px;
-
-      margin-top: 8px;
-
-      background: #e5e7eb;
-
-      border-radius: 10px;
-
-      overflow: hidden;
-
-    }
-
-
-    .barra-interna {
-
-      width: 0%;
-
-      height: 100%;
-
-      background: #1a73e8;
-
-      transition:
-        width .2s;
-
-    }
-
-
-    .resultado-masivo {
-
-      margin-top: 15px;
-
-    }
-
-
-    .resultado-item {
-
-      padding: 8px;
-
-      border-bottom:
-        1px solid #eee;
-
-      font-size: 13px;
-
-    }
-
-
-    .resultado-ok {
-
-      color: #1b5e20;
-
-    }
-
-
-    .resultado-error {
-
-      color: #b71c1c;
-
-    }
-
-
-    @media (
-      max-width: 600px
-    ) {
-
-      body {
-
-        padding: 6px;
-
-      }
-
-
-      .card {
-
-        padding: 13px;
-
-      }
-
-
-      .lista-alumnos {
-
-        max-height: 430px;
-
-      }
-
-    }
-
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; padding: 10px; color: #333; margin: 0; background: #f4f6f9; }
+    .contenedor { max-width: 800px; margin: 0 auto; }
+    .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 15px; }
+    h2 { font-size: 16px; margin: 0 0 15px 0; color: #1a73e8; }
+    label { display: block; font-weight: bold; margin-top: 12px; margin-bottom: 5px; color: #555; }
+    select, input { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+    .botonera { display: flex; gap: 10px; flex-wrap: wrap; }
+    .botonera button { flex: 1; min-width: 120px; }
+    button { padding: 12px; margin-top: 10px; cursor: pointer; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; transition: background 0.2s; }
+    button.primary { background: #1a73e8; color: white; }
+    button.primary:hover { background: #1557b0; }
+    button.success { background: #34a853; color: white; }
+    button.success:hover { background: #2d8f47; }
+    button.secondary { background: #e0e0e0; color: #333; }
+    button.secondary:hover { background: #d0d0d0; }
+    button:disabled { opacity: 0.5; cursor: wait; }
+    .status { margin-top: 15px; padding: 10px; border-radius: 8px; background: #f0f0f0; white-space: pre-wrap; font-size: 12px; text-align: center; }
+    .status.ok { background: #d9ead3; color: #274e13; border: 1px solid #b7d1a3; }
+    .status.err { background: #f4cccc; color: #990000; border: 1px solid #eababa; }
+    .status.cargando { background: #e8f0fe; color: #1a73e8; border: 1px solid #b7d1a3; }
+    .oculto { display: none !important; }
+    #panelPdf { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f6f9; z-index: 100; overflow-y: auto; padding: 10px; }
+    .toolbar-pdf { display: flex; gap: 8px; margin-bottom: 10px; position: sticky; top: 0; background: #f4f6f9; padding: 5px 0; z-index: 10; }
+    .toolbar-pdf button { margin-top: 0; flex: 1; }
+    .pagina-pdf { width: 100%; margin-bottom: 10px; background: white; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 5px; }
+    .pagina-pdf canvas { display: block; max-width: 100%; height: auto !important; margin: 0 auto; }
   </style>
-
 </head>
 
-
 <body>
+  <div class="contenedor">
+    <div id="panelFormulario" class="card">
+      <h2>📋 Generar Ficha Individual</h2>
 
+      <label>1. Curso y División</label>
+      <select id="cursoDivision" onchange="cargarAlumnos()">
+        <option value="">Cargando cursos...</option>
+      </select>
 
-<div class="contenedor">
+      <label>2. Alumno</label>
+      <select id="alumno">
+        <option value="">Seleccione un alumno</option>
+      </select>
 
-
-  <div class="card">
-
-
-    <h2>
-      📋 Generar Fichas Individuales
-    </h2>
-
-
-    <label>
-      Curso y División
-    </label>
-
-
-    <select
-      id="cursoDivision"
-      onchange="cargarAlumnos()"
-    >
-
-      <option value="">
-        Cargando cursos...
-      </option>
-
-    </select>
-
-
-    <div
-      id="bloqueAlumnos"
-      class="oculto"
-    >
-
-
-      <div
-        class="seleccionar-todos"
-      >
-
-        <input
-          type="checkbox"
-          id="checkTodos"
-          onchange="
-            seleccionarTodos(
-              this.checked
-            )
-          "
-        >
-
-
-        <label
-          for="checkTodos"
-        >
-
-          Seleccionar todos
-
-        </label>
-
+      <div class="botonera">
+        <button id="btnTodo" class="primary" onclick="generarTodo()">📄 Generar Ficha</button>
+        <button id="btnMaterias" class="success" onclick="cargarMaterias()">📚 Cargar Materias</button>
       </div>
-
-
-      <div
-        id="contador"
-        class="contador"
-      >
-
-        0 seleccionados
-
-      </div>
-
-
-      <div
-        id="listaAlumnos"
-        class="lista-alumnos"
-      >
-      </div>
-
-
-      <button
-        id="btnGenerar"
-        class="success"
-        onclick="
-          generarSeleccionados()
-        "
-      >
-
-        📄 Generar seleccionados
-
-      </button>
-
-
-      <div
-        id="progresoBox"
-        class="progreso-box oculto"
-      >
-
-        <div
-          id="textoProgreso"
-        >
-
-          Preparando...
-
-        </div>
-
-
-        <div
-          class="barra"
-        >
-
-          <div
-            id="barraProgreso"
-            class="barra-interna"
-          >
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="resultadoMasivo"
-        class="resultado-masivo"
-      >
-      </div>
-
-
+      
+      <div class="status oculto" id="status"></div>
     </div>
 
-
-    <div
-      id="status"
-      class="status oculto"
-    >
+    <div id="panelPdf" class="oculto">
+      <div class="toolbar-pdf">
+        <button class="primary" onclick="descargarPdfLocal()">⬇️ Descargar PDF</button>
+        <button class="secondary" onclick="cerrarVisor()">✖️ Cerrar</button>
+      </div>
+      <div id="estadoRender" class="status cargando">Preparando visor...</div>
+      <div id="visorPdf"></div>
     </div>
-
-
   </div>
 
+  <script>
+    // ============================================================
+    // ⚠️ CONFIGURACIÓN - PON AQUÍ LA URL DE TU WEB APP
+    // ============================================================
+    // 👇 REEMPLAZA ESTA URL CON LA QUE COPIASSTE AL PUBLICAR
+    const URL_API = "https://script.google.com/macros/s/AKfycbzJigySzNnNNYIFKyIx2JWnAQBu7_O4XcPWpS6tqJRkWiKg_1yRmxDUdpIq0KHJqOJj/exec";
 
-</div>
+    const CODIGO_ACCESO =
+      new URLSearchParams(window.location.search).get("acceso") || "";
+    
+    let pdfBase64Memoria = "";
+    let nombrePdfActual = "Ficha.pdf";
+    let ultimoDniGenerado = "";
+    let ultimoNombreAlumno = "";
 
-
-<script>
-
-
-/************************************************************
- * API
- ************************************************************/
-
-const URL_API =
-  "https://script.google.com/macros/s/AKfycbzJigySzNnNNYIFKyIx2JWnAQBu7_O4XcPWpS6tqJRkWiKg_1yRmxDUdpIq0KHJqOJj/exec";
-
-
-let alumnosCurso =
-  [];
-
-
-let procesoActivo =
-  false;
-
-
-/************************************************************
- * INICIO
- ************************************************************/
-
-window.onload =
-  inicializar;
-
-
-/************************************************************
- * STATUS
- ************************************************************/
-
-function setStatus(
-  mensaje,
-  tipo
-) {
-
-  const el =
-    document.getElementById(
-      "status"
-    );
-
-
-  if (!mensaje) {
-
-    el.classList.add(
-      "oculto"
-    );
-
-    el.textContent =
-      "";
-
-    return;
-
-  }
-
-
-  el.className =
-    "status " +
-    (tipo || "");
-
-
-  el.textContent =
-    mensaje;
-
-
-  el.classList.remove(
-    "oculto"
-  );
-
-}
-
-
-/************************************************************
- * LLAMAR API
- ************************************************************/
-
-async function llamarAPI(
-  accion,
-  params = {}
-) {
-
-  const url =
-    new URL(
-      URL_API
-    );
-
-
-  url.searchParams.set(
-    "accion",
-    accion
-  );
-
-
-  Object
-    .entries(params)
-    .forEach(
-      ([key, value]) => {
-
-        url.searchParams.set(
-          key,
-          value
-        );
-
+    function setStatus(msg, tipo) {
+      const el = document.getElementById("status");
+      if (!msg) { 
+        el.classList.add("oculto"); 
+        return; 
       }
-    );
-
-
-  const response =
-    await fetch(
-      url.toString(),
-      {
-        cache:
-          "no-store"
-      }
-    );
-
-
-  if (!response.ok) {
-
-    throw new Error(
-      "Error HTTP " +
-      response.status
-    );
-
-  }
-
-
-  const texto =
-    await response.text();
-
-
-  if (
-    !texto
-      .trim()
-      .startsWith("{")
-  ) {
-
-    throw new Error(
-      "El servidor no devolvió una respuesta válida."
-    );
-
-  }
-
-
-  return JSON.parse(
-    texto
-  );
-
-}
-
-
-/************************************************************
- * CARGAR CURSOS
- ************************************************************/
-
-async function inicializar() {
-
-  try {
-
-    setStatus(
-      "🔄 Cargando cursos...",
-      "cargando"
-    );
-
-
-    const res =
-      await llamarAPI(
-        "obtenerCursos"
-      );
-
-
-    if (!res.ok) {
-
-      throw new Error(
-        res.mensaje
-      );
-
+      el.classList.remove("oculto");
+      el.textContent = msg;
+      el.className = "status " + (tipo || "");
     }
 
-
-    const select =
-      document.getElementById(
-        "cursoDivision"
-      );
-
-
-    select.innerHTML =
-      '<option value="">Seleccionar Curso...</option>';
-
-
-    res.cursos.forEach(
-      curso => {
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          curso;
-
-
-        option.textContent =
-          curso;
-
-
-        select.appendChild(
-          option
-        );
-
+    function bloquearBotones(bloquear) {
+      document.getElementById("btnTodo").disabled = bloquear;
+      document.getElementById("btnMaterias").disabled = bloquear;
+      if (bloquear) {
+        document.getElementById("btnTodo").textContent = "⏳ Procesando...";
+      } else {
+        document.getElementById("btnTodo").textContent = "📄 Generar Ficha";
       }
-    );
-
-
-    setStatus(
-      "✅ Cursos cargados",
-      "ok"
-    );
-
-  }
-
-  catch(error) {
-
-    setStatus(
-      "❌ " +
-      error.message,
-      "err"
-    );
-
-  }
-
-}
-
-
-/************************************************************
- * CARGAR ALUMNOS DEL CURSO
- ************************************************************/
-
-async function cargarAlumnos() {
-
-  const curso =
-    document
-      .getElementById(
-        "cursoDivision"
-      )
-      .value;
-
-
-  const bloque =
-    document
-      .getElementById(
-        "bloqueAlumnos"
-      );
-
-
-  const lista =
-    document
-      .getElementById(
-        "listaAlumnos"
-      );
-
-
-  document
-    .getElementById(
-      "resultadoMasivo"
-    )
-    .innerHTML =
-      "";
-
-
-  document
-    .getElementById(
-      "checkTodos"
-    )
-    .checked =
-      false;
-
-
-  document
-    .getElementById(
-      "progresoBox"
-    )
-    .classList
-    .add(
-      "oculto"
-    );
-
-
-  actualizarContador();
-
-
-  if (!curso) {
-
-    bloque.classList.add(
-      "oculto"
-    );
-
-    return;
-
-  }
-
-
-  try {
-
-    setStatus(
-      "🔄 Cargando alumnos...",
-      "cargando"
-    );
-
-
-    const res =
-      await llamarAPI(
-        "obtenerAlumnos",
-        {
-          cursoDivision:
-            curso
-        }
-      );
-
-
-    if (!res.ok) {
-
-      throw new Error(
-        res.mensaje
-      );
-
     }
 
-
-    alumnosCurso =
-      res.alumnos || [];
-
-
-    lista.innerHTML =
-      "";
-
-
-    alumnosCurso.forEach(
-      (alumno, index) => {
-
-        const fila =
-          document.createElement(
-            "div"
-          );
-
-
-        fila.className =
-          "fila-alumno";
-
-
-        fila.innerHTML = `
-
-          <input
-            type="checkbox"
-            class="check-alumno"
-            id="alumno_${index}"
-            data-index="${index}"
-            onchange="actualizarContador()"
-          >
-
-          <label
-            for="alumno_${index}"
-            class="datos-alumno"
-          >
-
-            <div
-              class="nombre-alumno"
-            >
-
-              ${escaparHtml(
-                alumno.alumno
-              )}
-
-            </div>
-
-            <div
-              class="dni-alumno"
-            >
-
-              DNI:
-              ${escaparHtml(
-                alumno.dni
-              )}
-
-            </div>
-
-          </label>
-
-        `;
-
-
-        lista.appendChild(
-          fila
-        );
-
+    async function llamarAPI(accion, params = {}) {
+      if (!CODIGO_ACCESO) {
+        throw new Error("Falta el código de acceso. Abrí Fichas desde el Panel de Preceptoría.");
       }
-    );
 
-
-    bloque.classList.remove(
-      "oculto"
-    );
-
-
-    actualizarContador();
-
-
-    setStatus(
-      "✅ " +
-      alumnosCurso.length +
-      " alumnos cargados",
-      "ok"
-    );
-
-  }
-
-  catch(error) {
-
-    bloque.classList.add(
-      "oculto"
-    );
-
-
-    setStatus(
-      "❌ " +
-      error.message,
-      "err"
-    );
-
-  }
-
-}
-
-
-/************************************************************
- * SELECCIONAR TODOS
- ************************************************************/
-
-function seleccionarTodos(
-  estado
-) {
-
-  document
-    .querySelectorAll(
-      ".check-alumno"
-    )
-    .forEach(
-      check => {
-
-        check.checked =
-          estado;
-
+      const url = new URL(URL_API);
+      url.searchParams.append('accion', accion);
+      url.searchParams.append('acceso', CODIGO_ACCESO);
+      Object.keys(params).forEach(key => {
+        url.searchParams.append(key, params[key]);
+      });
+      
+      console.log('📡 Llamando:', url.toString());
+      
+      const response = await fetch(url.toString());
+      
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
       }
-    );
+      
+      const texto = await response.text();
+      console.log('📥 Respuesta:', texto.substring(0, 200));
+      
+      if (!texto.trim().startsWith('{')) {
+        throw new Error('El servidor devolvió HTML. Verifica la URL.');
+      }
+      
+      try {
+        return JSON.parse(texto);
+      } catch (e) {
+        throw new Error('Error al procesar la respuesta del servidor');
+      }
+    }
 
+    async function inicializar() {
+      try {
+        setStatus("🔄 Cargando cursos...", "cargando");
+        const res = await llamarAPI('obtenerCursos');
+        if (!res.ok) throw new Error(res.mensaje);
+        
+        const sel = document.getElementById("cursoDivision");
+        sel.innerHTML = '<option value="">Seleccionar Curso...</option>';
+        res.cursos.forEach(c => {
+          const op = document.createElement("option");
+          op.value = c;
+          op.textContent = c;
+          sel.appendChild(op);
+        });
+        setStatus("✅ " + res.cursos.length + " cursos cargados", "ok");
+      } catch (err) {
+        setStatus("❌ " + err.message, "err");
+        console.error(err);
+      }
+    }
 
-  actualizarContador();
+    async function cargarAlumnos() {
+      const cursoDiv = document.getElementById("cursoDivision").value;
+      const selAlu = document.getElementById("alumno");
+      selAlu.innerHTML = '<option value="">Cargando...</option>';
+      setStatus("");
 
-}
+      if (!cursoDiv) { 
+        selAlu.innerHTML = '<option value="">Seleccione un curso</option>'; 
+        return; 
+      }
 
-
-/************************************************************
- * CONTADOR
- ************************************************************/
-
-function actualizarContador() {
-
-  const checks =
-    document.querySelectorAll(
-      ".check-alumno"
-    );
-
-
-  const seleccionados =
-    document.querySelectorAll(
-      ".check-alumno:checked"
-    );
-
-
-  document
-    .getElementById(
-      "contador"
-    )
-    .textContent =
-
-      seleccionados.length +
-      " seleccionados de " +
-      checks.length;
-
-
-  const checkTodos =
-    document.getElementById(
-      "checkTodos"
-    );
-
-
-  if (
-    checks.length > 0
-  ) {
-
-    checkTodos.checked =
-      seleccionados.length ===
-      checks.length;
-
-  }
-
-}
-
-
-/************************************************************
- * OBTENER SELECCIONADOS
- ************************************************************/
-
-function obtenerSeleccionados() {
-
-  const resultado =
-    [];
-
-
-  document
-    .querySelectorAll(
-      ".check-alumno:checked"
-    )
-    .forEach(
-      check => {
-
-        const index =
-          Number(
-            check.dataset.index
-          );
-
-
-        if (
-          alumnosCurso[index]
-        ) {
-
-          resultado.push(
-            alumnosCurso[index]
-          );
-
+      try {
+        const res = await llamarAPI('obtenerAlumnos', { cursoDivision: cursoDiv });
+        if (!res.ok) throw new Error(res.mensaje);
+        
+        selAlu.innerHTML = '';
+        if (res.alumnos.length === 0) {
+          selAlu.innerHTML = '<option value="">Sin alumnos</option>';
+          return;
         }
-
+        
+        res.alumnos.forEach(a => {
+          const op = document.createElement("option");
+          op.value = a.dni;
+          op.textContent = a.alumno + " (DNI " + a.dni + ")";
+          selAlu.appendChild(op);
+        });
+        setStatus("✅ " + res.alumnos.length + " alumnos cargados", "ok");
+      } catch (err) {
+        selAlu.innerHTML = '<option value="">Error</option>';
+        setStatus("❌ " + err.message, "err");
+        console.error(err);
       }
-    );
-
-
-  return resultado;
-
-}
-
-
-/************************************************************
- * GENERAR FICHAS
- ************************************************************/
-
-async function generarSeleccionados() {
-
-  if (
-    procesoActivo
-  ) {
-
-    return;
-
-  }
-
-
-  const seleccionados =
-    obtenerSeleccionados();
-
-
-  if (
-    seleccionados.length === 0
-  ) {
-
-    setStatus(
-      "⚠️ Seleccioná al menos un alumno.",
-      "err"
-    );
-
-    return;
-
-  }
-
-
-  const confirmar =
-    window.confirm(
-
-      "Se generarán " +
-      seleccionados.length +
-      " ficha(s).\n\n" +
-      "¿Continuar?"
-
-    );
-
-
-  if (!confirmar) {
-
-    return;
-
-  }
-
-
-  procesoActivo =
-    true;
-
-
-  const boton =
-    document.getElementById(
-      "btnGenerar"
-    );
-
-
-  const progreso =
-    document.getElementById(
-      "progresoBox"
-    );
-
-
-  const textoProgreso =
-    document.getElementById(
-      "textoProgreso"
-    );
-
-
-  const barra =
-    document.getElementById(
-      "barraProgreso"
-    );
-
-
-  const resultado =
-    document.getElementById(
-      "resultadoMasivo"
-    );
-
-
-  boton.disabled =
-    true;
-
-
-  boton.textContent =
-    "⏳ Generando...";
-
-
-  progreso.classList.remove(
-    "oculto"
-  );
-
-
-  barra.style.width =
-    "0%";
-
-
-  resultado.innerHTML =
-    "";
-
-
-  let correctos =
-    0;
-
-
-  let errores =
-    0;
-
-
-  for (
-    let i = 0;
-    i < seleccionados.length;
-    i++
-  ) {
-
-    const alumno =
-      seleccionados[i];
-
-
-    const numero =
-      i + 1;
-
-
-    textoProgreso.textContent =
-
-      "Generando " +
-      numero +
-      " de " +
-      seleccionados.length +
-      ": " +
-      alumno.alumno;
-
-
-    setStatus(
-
-      "🔄 " +
-      numero +
-      " de " +
-      seleccionados.length +
-      "\n" +
-      alumno.alumno,
-
-      "cargando"
-
-    );
-
-
-    try {
-
-      const res =
-        await llamarAPI(
-          "generarFicha",
-          {
-            dni:
-              alumno.dni
+    }
+
+    async function generarTodo() {
+      const dni = document.getElementById("alumno").value;
+      const cursoDiv = document.getElementById("cursoDivision").value;
+      
+      if (!dni || !cursoDiv) {
+        return setStatus("⚠️ Seleccioná Curso y Alumno.", "err");
+      }
+
+      ultimoDniGenerado = dni;
+      
+      const selAlu = document.getElementById("alumno");
+      const nombreCompleto = selAlu.options[selAlu.selectedIndex]?.text || "";
+      ultimoNombreAlumno = nombreCompleto.split(" (DNI")[0] || "";
+
+      setStatus("🔄 Generando ficha...", "cargando");
+      bloquearBotones(true);
+      pdfBase64Memoria = "";
+
+      try {
+        const res = await llamarAPI('generarFicha', { dni: dni });
+        if (!res.ok) throw new Error(res.mensaje);
+        
+        setStatus("✅ Ficha generada. Cargando materias...", "ok");
+        
+        let materiasCargadas = 0;
+        try {
+          const resMaterias = await llamarAPI('cargarMaterias', { dni: dni });
+          if (resMaterias.ok) {
+            materiasCargadas = resMaterias.cantidad || 0;
+            setStatus("✅ Materias cargadas: " + materiasCargadas + ". Generando PDF...", "ok");
+          } else {
+            setStatus("⚠️ " + resMaterias.mensaje + ". Generando PDF...", "ok");
           }
-        );
+        } catch (e) {
+          setStatus("⚠️ Error cargando materias: " + e.message + ". Generando PDF...", "ok");
+        }
+        
+        const resPDF = await llamarAPI('exportarPDF', { dni: dni });
+        if (!resPDF.ok) throw new Error(resPDF.mensaje);
+        
+        pdfBase64Memoria = resPDF.base64;
+        nombrePdfActual = resPDF.nombreArchivo || "Ficha.pdf";
+        
+        setStatus("✅ Ficha completa con " + materiasCargadas + " materias. Abriendo visor...", "ok");
+        
+        await mostrarVisorPdf(pdfBase64Memoria);
+        
+        bloquearBotones(false);
+        
+      } catch (err) {
+        bloquearBotones(false);
+        setStatus("❌ " + err.message, "err");
+        console.error(err);
+      }
+    }
 
-
-      if (!res.ok) {
-
-        throw new Error(
-          res.mensaje ||
-          "Error desconocido"
-        );
-
+    async function cargarMaterias() {
+      let dni = document.getElementById("alumno").value;
+      if (!dni) {
+        dni = ultimoDniGenerado;
+      }
+      
+      if (!dni) {
+        return setStatus("⚠️ Primero generá una ficha o seleccioná un alumno.", "err");
       }
 
+      setStatus("🔄 Cargando materias...", "cargando");
+      document.getElementById("btnMaterias").disabled = true;
+      document.getElementById("btnMaterias").textContent = "⏳ Cargando...";
 
-      if (!res.base64) {
-
-        throw new Error(
-          "No se recibió el PDF."
-        );
-
+      try {
+        const res = await llamarAPI('cargarMaterias', { dni: dni });
+        document.getElementById("btnMaterias").disabled = false;
+        document.getElementById("btnMaterias").textContent = "📚 Cargar Materias";
+        
+        if (!res.ok) throw new Error(res.mensaje);
+        
+        setStatus("✅ " + res.mensaje + ". Actualizando PDF...", "cargando");
+        
+        const resPDF = await llamarAPI('exportarPDF');
+        if (resPDF.ok) {
+          pdfBase64Memoria = resPDF.base64;
+          nombrePdfActual = resPDF.nombreArchivo || "Ficha.pdf";
+          setStatus("✅ PDF actualizado con materias", "ok");
+          await mostrarVisorPdf(pdfBase64Memoria);
+        } else {
+          setStatus("✅ " + res.mensaje + " | ⚠️ Error al actualizar PDF", "ok");
+        }
+      } catch (err) {
+        document.getElementById("btnMaterias").disabled = false;
+        document.getElementById("btnMaterias").textContent = "📚 Cargar Materias";
+        setStatus("❌ " + err.message, "err");
+        console.error(err);
       }
-
-
-      descargarBase64(
-
-        res.base64,
-
-        res.nombreArchivo ||
-        (
-          "Ficha - " +
-          alumno.alumno +
-          ".pdf"
-        )
-
-      );
-
-
-      correctos++;
-
-
-      agregarResultado(
-
-        "✅ " +
-        alumno.alumno,
-
-        true
-
-      );
-
     }
 
-    catch(error) {
+    async function mostrarVisorPdf(base64) {
+      document.getElementById("panelPdf").classList.remove("oculto");
+      document.getElementById("estadoRender").classList.remove("oculto");
+      document.getElementById("estadoRender").textContent = "Abriendo PDF...";
+      
+      const bytes = base64ABytes(base64);
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-      errores++;
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+        const contenedor = document.getElementById("visorPdf");
+        contenedor.innerHTML = "";
 
+        for (let num = 1; num <= pdf.numPages; num++) {
+          document.getElementById("estadoRender").textContent = `Página ${num} de ${pdf.numPages}...`;
+          
+          const pagina = await pdf.getPage(num);
+          const viewportBase = pagina.getViewport({ scale: 1 });
+          const ancho = contenedor.clientWidth - 10;
+          const escala = ancho / viewportBase.width;
+          const viewport = pagina.getViewport({ scale: escala });
 
-      agregarResultado(
+          const envoltorio = document.createElement("div");
+          envoltorio.className = "pagina-pdf";
 
-        "❌ " +
-        alumno.alumno +
-        " — " +
-        error.message,
+          const canvas = document.createElement("canvas");
+          const contexto = canvas.getContext("2d");
+          
+          const ratio = window.devicePixelRatio || 1;
+          canvas.width = viewport.width * ratio;
+          canvas.height = viewport.height * ratio;
+          canvas.style.width = viewport.width + "px";
+          canvas.style.height = viewport.height + "px";
+          contexto.scale(ratio, ratio);
 
-        false
+          envoltorio.appendChild(canvas);
+          contenedor.appendChild(envoltorio);
 
-      );
-
-    }
-
-
-    const porcentaje =
-      Math.round(
-        (
-          numero /
-          seleccionados.length
-        ) *
-        100
-      );
-
-
-    barra.style.width =
-      porcentaje +
-      "%";
-
-
-    /*
-     * Pausa pequeña antes del siguiente alumno.
-     */
-
-    if (
-      numero <
-      seleccionados.length
-    ) {
-
-      await esperar(
-        700
-      );
-
-    }
-
-  }
-
-
-  textoProgreso.textContent =
-    "Proceso terminado";
-
-
-  setStatus(
-
-    "✅ Proceso terminado\n\n" +
-    "Generadas: " +
-    correctos +
-    "\n" +
-    "Con error: " +
-    errores,
-
-    errores > 0
-      ? "err"
-      : "ok"
-
-  );
-
-
-  boton.disabled =
-    false;
-
-
-  boton.textContent =
-    "📄 Generar seleccionados";
-
-
-  procesoActivo =
-    false;
-
-}
-
-
-/************************************************************
- * RESULTADOS
- ************************************************************/
-
-function agregarResultado(
-  texto,
-  correcto
-) {
-
-  const contenedor =
-    document.getElementById(
-      "resultadoMasivo"
-    );
-
-
-  const div =
-    document.createElement(
-      "div"
-    );
-
-
-  div.className =
-    "resultado-item " +
-    (
-      correcto
-        ? "resultado-ok"
-        : "resultado-error"
-    );
-
-
-  div.textContent =
-    texto;
-
-
-  contenedor.appendChild(
-    div
-  );
-
-}
-
-
-/************************************************************
- * DESCARGAR PDF
- ************************************************************/
-
-function descargarBase64(
-  base64,
-  nombreArchivo
-) {
-
-  const binario =
-    atob(
-      base64
-    );
-
-
-  const bytes =
-    new Uint8Array(
-      binario.length
-    );
-
-
-  for (
-    let i = 0;
-    i < binario.length;
-    i++
-  ) {
-
-    bytes[i] =
-      binario.charCodeAt(
-        i
-      );
-
-  }
-
-
-  const blob =
-    new Blob(
-      [bytes],
-      {
-        type:
-          "application/pdf"
+          await pagina.render({ canvasContext: contexto, viewport: viewport }).promise;
+        }
+        document.getElementById("estadoRender").classList.add("oculto");
+        setStatus("✅ PDF visible - " + pdf.numPages + " páginas", "ok");
+      } catch (e) {
+        document.getElementById("estadoRender").textContent = "❌ Error al visualizar";
+        console.error(e);
       }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const enlace =
-    document.createElement(
-      "a"
-    );
-
-
-  enlace.href =
-    url;
-
-
-  enlace.download =
-    nombreArchivo;
-
-
-  document.body.appendChild(
-    enlace
-  );
-
-
-  enlace.click();
-
-
-  document.body.removeChild(
-    enlace
-  );
-
-
-  setTimeout(
-    () => {
-
-      URL.revokeObjectURL(
-        url
-      );
-
-    },
-    1500
-  );
-
-}
-
-
-/************************************************************
- * ESPERA
- ************************************************************/
-
-function esperar(
-  milisegundos
-) {
-
-  return new Promise(
-    resolve => {
-
-      setTimeout(
-        resolve,
-        milisegundos
-      );
-
     }
-  );
 
-}
+    function descargarPdfLocal() {
+      if (!pdfBase64Memoria) {
+        setStatus("⚠️ No hay PDF", "err");
+        return;
+      }
+      const link = document.createElement("a");
+      link.href = "data:application/pdf;base64," + pdfBase64Memoria;
+      link.download = nombrePdfActual;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setStatus("✅ Descargando: " + nombrePdfActual, "ok");
+    }
 
+    function cerrarVisor() {
+      document.getElementById("panelPdf").classList.add("oculto");
+      document.getElementById("visorPdf").innerHTML = "";
+      bloquearBotones(false);
+      setStatus("✅ Visor cerrado - Puedes generar otra ficha", "ok");
+    }
 
-/************************************************************
- * ESCAPAR HTML
- ************************************************************/
+    function base64ABytes(base64) {
+      const binario = atob(base64);
+      const bytes = new Uint8Array(binario.length);
+      for (let i = 0; i < binario.length; i++) {
+        bytes[i] = binario.charCodeAt(i);
+      }
+      return bytes;
+    }
 
-function escaparHtml(
-  valor
-) {
-
-  return String(
-    valor || ""
-  )
-  .replace(
-    /&/g,
-    "&amp;"
-  )
-  .replace(
-    /</g,
-    "&lt;"
-  )
-  .replace(
-    />/g,
-    "&gt;"
-  )
-  .replace(
-    /"/g,
-    "&quot;"
-  )
-  .replace(
-    /'/g,
-    "&#039;"
-  );
-
-}
-
-
-</script>
-
-
+    window.onload = inicializar;
+  </script>
 </body>
-
 </html>
