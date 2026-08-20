@@ -30,6 +30,82 @@
     .status.err { background: #f4cccc; color: #990000; border: 1px solid #eababa; }
     .status.cargando { background: #e8f0fe; color: #1a73e8; border: 1px solid #b7d1a3; }
     .oculto { display: none !important; }
+
+    .modo-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .modo-selector button {
+      flex: 1;
+      min-width: 180px;
+      margin-top: 0;
+    }
+
+    .lista-alumnos {
+      margin-top: 10px;
+      max-height: 440px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .fila-alumno {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .fila-alumno:last-child {
+      border-bottom: none;
+    }
+
+    .fila-alumno input[type="checkbox"] {
+      width: auto;
+      transform: scale(1.15);
+      flex-shrink: 0;
+    }
+
+    .fila-alumno-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .fila-alumno-info strong {
+      display: block;
+    }
+
+    .fila-alumno-info small {
+      display: block;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .acciones-lista {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .acciones-lista button {
+      flex: 1;
+      min-width: 130px;
+      margin-top: 0;
+    }
+
+    .contador {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #555;
+      font-weight: bold;
+    }
+
     #panelPdf { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f6f9; z-index: 100; overflow-y: auto; padding: 10px; }
     .toolbar-pdf { display: flex; gap: 8px; margin-bottom: 10px; position: sticky; top: 0; background: #f4f6f9; padding: 5px 0; z-index: 10; }
     .toolbar-pdf button { margin-top: 0; flex: 1; }
@@ -41,23 +117,61 @@
 <body>
   <div class="contenedor">
     <div id="panelFormulario" class="card">
-      <h2>📋 Generar Ficha Individual</h2>
+      <h2>📋 Generar Fichas Individuales</h2>
 
-      <label>1. Curso y División</label>
-      <select id="cursoDivision" onchange="cargarAlumnos()">
-        <option value="">Cargando cursos...</option>
-      </select>
+      <div class="modo-selector">
+        <button id="btnModoIndividual" class="primary" type="button" onclick="cambiarModoFicha('individual')">
+          👤 Ficha por alumno
+        </button>
 
-      <label>2. Alumno</label>
-      <select id="alumno">
-        <option value="">Seleccione un alumno</option>
-      </select>
-
-      <div class="botonera">
-        <button id="btnTodo" class="primary" onclick="generarTodo()">📄 Generar Ficha</button>
-        <button id="btnMaterias" class="success" onclick="cargarMaterias()">📚 Cargar Materias</button>
+        <button id="btnModoLote" class="secondary" type="button" onclick="cambiarModoFicha('lote')">
+          👥 Varias fichas
+        </button>
       </div>
-      
+
+      <!-- Mantiene la opción original con vista previa -->
+      <div id="modoIndividual">
+        <label>1. Curso y División</label>
+        <select id="cursoDivision" onchange="cargarAlumnos()">
+          <option value="">Cargando cursos...</option>
+        </select>
+
+        <label>2. Alumno</label>
+        <select id="alumno">
+          <option value="">Seleccione un alumno</option>
+        </select>
+
+        <div class="botonera">
+          <button id="btnTodo" class="primary" onclick="generarTodo()">📄 Generar Ficha</button>
+          <button id="btnMaterias" class="success" onclick="cargarMaterias()">📚 Cargar Materias</button>
+        </div>
+      </div>
+
+      <!-- Nueva opción para generar varias fichas -->
+      <div id="modoLote" class="oculto">
+        <label>1. Curso y División</label>
+        <select id="cursoDivisionLote" onchange="cargarAlumnosLote()">
+          <option value="">Cargando cursos...</option>
+        </select>
+
+        <label>2. Seleccionar alumnos</label>
+
+        <div class="acciones-lista">
+          <button class="secondary" type="button" onclick="seleccionarTodosLote(true)">☑️ Seleccionar todos</button>
+          <button class="secondary" type="button" onclick="seleccionarTodosLote(false)">⬜ Quitar selección</button>
+        </div>
+
+        <div id="contadorSeleccionadosLote" class="contador">0 seleccionados</div>
+
+        <div id="listaAlumnosLote" class="lista-alumnos">
+          <div style="padding:12px;color:#666;">Seleccione un curso.</div>
+        </div>
+
+        <div class="botonera">
+          <button id="btnGenerarLote" class="primary" onclick="generarSeleccionadosLote()">📄 Generar seleccionadas</button>
+        </div>
+      </div>
+
       <div class="status oculto" id="status"></div>
     </div>
 
@@ -147,13 +261,20 @@
         const res = await llamarAPI('obtenerCursos');
         if (!res.ok) throw new Error(res.mensaje);
         
-        const sel = document.getElementById("cursoDivision");
-        sel.innerHTML = '<option value="">Seleccionar Curso...</option>';
-        res.cursos.forEach(c => {
-          const op = document.createElement("option");
-          op.value = c;
-          op.textContent = c;
-          sel.appendChild(op);
+        const selectores = [
+          document.getElementById("cursoDivision"),
+          document.getElementById("cursoDivisionLote")
+        ];
+
+        selectores.forEach(sel => {
+          sel.innerHTML = '<option value="">Seleccionar Curso...</option>';
+
+          res.cursos.forEach(c => {
+            const op = document.createElement("option");
+            op.value = c;
+            op.textContent = c;
+            sel.appendChild(op);
+          });
         });
         setStatus("✅ " + res.cursos.length + " cursos cargados", "ok");
       } catch (err) {
@@ -196,6 +317,307 @@
         console.error(err);
       }
     }
+
+    let ALUMNOS_LOTE = [];
+
+    function cambiarModoFicha(modo) {
+      const individual = document.getElementById("modoIndividual");
+      const lote = document.getElementById("modoLote");
+      const btnIndividual = document.getElementById("btnModoIndividual");
+      const btnLote = document.getElementById("btnModoLote");
+
+      if (modo === "lote") {
+        individual.classList.add("oculto");
+        lote.classList.remove("oculto");
+        btnIndividual.className = "secondary";
+        btnLote.className = "primary";
+      } else {
+        lote.classList.add("oculto");
+        individual.classList.remove("oculto");
+        btnLote.className = "secondary";
+        btnIndividual.className = "primary";
+      }
+
+      setStatus("");
+    }
+
+    async function cargarAlumnosLote() {
+      const cursoDiv = document.getElementById("cursoDivisionLote").value;
+      const cont = document.getElementById("listaAlumnosLote");
+
+      ALUMNOS_LOTE = [];
+      cont.innerHTML = '<div style="padding:12px;">Cargando...</div>';
+      actualizarContadorLote();
+      setStatus("");
+
+      if (!cursoDiv) {
+        cont.innerHTML =
+          '<div style="padding:12px;color:#666;">Seleccione un curso.</div>';
+        return;
+      }
+
+      try {
+        const res =
+          await llamarAPI('obtenerAlumnos', { cursoDivision: cursoDiv });
+
+        if (!res.ok) {
+          throw new Error(res.mensaje);
+        }
+
+        ALUMNOS_LOTE = res.alumnos || [];
+        renderizarListaLote();
+
+        setStatus(
+          "✅ " + ALUMNOS_LOTE.length + " alumnos cargados",
+          "ok"
+        );
+
+      } catch (err) {
+        cont.innerHTML =
+          '<div style="padding:12px;color:#990000;">Error al cargar alumnos.</div>';
+
+        setStatus("❌ " + err.message, "err");
+        console.error(err);
+      }
+    }
+
+    function renderizarListaLote() {
+      const cont = document.getElementById("listaAlumnosLote");
+      cont.innerHTML = "";
+
+      if (!ALUMNOS_LOTE.length) {
+        cont.innerHTML =
+          '<div style="padding:12px;color:#666;">Sin alumnos en este curso.</div>';
+
+        actualizarContadorLote();
+        return;
+      }
+
+      ALUMNOS_LOTE.forEach((a, i) => {
+        const fila = document.createElement("label");
+        fila.className = "fila-alumno";
+
+        const chk = document.createElement("input");
+        chk.type = "checkbox";
+        chk.className = "chk-alumno-lote";
+        chk.dataset.indice = String(i);
+        chk.addEventListener("change", actualizarContadorLote);
+
+        const info = document.createElement("div");
+        info.className = "fila-alumno-info";
+
+        const strong = document.createElement("strong");
+        strong.textContent = a.alumno || "";
+
+        const small = document.createElement("small");
+        small.textContent = "DNI: " + (a.dni || "");
+
+        info.appendChild(strong);
+        info.appendChild(small);
+
+        fila.appendChild(chk);
+        fila.appendChild(info);
+
+        cont.appendChild(fila);
+      });
+
+      actualizarContadorLote();
+    }
+
+    function seleccionarTodosLote(estado) {
+      document
+        .querySelectorAll(".chk-alumno-lote")
+        .forEach(chk => {
+          chk.checked = estado;
+        });
+
+      actualizarContadorLote();
+    }
+
+    function actualizarContadorLote() {
+      const cantidad =
+        document.querySelectorAll(".chk-alumno-lote:checked").length;
+
+      const el =
+        document.getElementById("contadorSeleccionadosLote");
+
+      if (el) {
+        el.textContent =
+          cantidad +
+          (cantidad === 1 ? " seleccionado" : " seleccionados");
+      }
+    }
+
+    function obtenerSeleccionadosLote() {
+      return Array.from(
+        document.querySelectorAll(".chk-alumno-lote:checked")
+      )
+      .map(chk => {
+        const indice = Number(chk.dataset.indice);
+        return ALUMNOS_LOTE[indice];
+      })
+      .filter(Boolean);
+    }
+
+    async function generarSeleccionadosLote() {
+      const cursoDiv =
+        document.getElementById("cursoDivisionLote").value;
+
+      const seleccionados =
+        obtenerSeleccionadosLote();
+
+      const btn =
+        document.getElementById("btnGenerarLote");
+
+      if (!cursoDiv) {
+        return setStatus("⚠️ Seleccioná un curso.", "err");
+      }
+
+      if (!seleccionados.length) {
+        return setStatus(
+          "⚠️ Seleccioná al menos un alumno.",
+          "err"
+        );
+      }
+
+      btn.disabled = true;
+      btn.textContent = "⏳ Procesando...";
+
+      let generadas = 0;
+      let errores = 0;
+      const detalle = [];
+
+      for (let i = 0; i < seleccionados.length; i++) {
+        const alumno = seleccionados[i];
+        const dni = alumno.dni;
+        const nombre =
+          alumno.alumno || ("DNI " + dni);
+
+        setStatus(
+          "⏳ " +
+          (i + 1) +
+          " de " +
+          seleccionados.length +
+          "\\nGenerando ficha de " +
+          nombre +
+          "...",
+          "cargando"
+        );
+
+        try {
+          const res =
+            await llamarAPI(
+              'generarFicha',
+              { dni: dni }
+            );
+
+          if (!res.ok) {
+            throw new Error(res.mensaje);
+          }
+
+          try {
+            await llamarAPI(
+              'cargarMaterias',
+              { dni: dni }
+            );
+          } catch (e) {
+            console.warn("Materias:", e);
+          }
+
+          const resPDF =
+            await llamarAPI(
+              'exportarPDF',
+              { dni: dni }
+            );
+
+          if (!resPDF.ok) {
+            throw new Error(resPDF.mensaje);
+          }
+
+          descargarPdfLote(
+            resPDF.base64,
+            resPDF.nombreArchivo ||
+              ("Ficha - " + nombre + ".pdf")
+          );
+
+          generadas++;
+
+          await esperarLote(500);
+
+        } catch (err) {
+          errores++;
+          detalle.push(
+            nombre +
+            " → " +
+            err.message
+          );
+          console.error(err);
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent =
+        "📄 Generar seleccionadas";
+
+      let msg =
+        "✅ Proceso terminado.\\n\\n" +
+        "Fichas generadas: " +
+        generadas +
+        "\\nErrores: " +
+        errores;
+
+      if (detalle.length) {
+        msg +=
+          "\\n\\n" +
+          detalle.join("\\n");
+      }
+
+      setStatus(
+        msg,
+        errores ? "err" : "ok"
+      );
+    }
+
+    function descargarPdfLote(
+      base64,
+      nombre
+    ) {
+      const bytes =
+        base64ABytes(base64);
+
+      const blob =
+        new Blob(
+          [bytes],
+          { type: "application/pdf" }
+        );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const enlace =
+        document.createElement("a");
+
+      enlace.href = url;
+      enlace.download =
+        nombre || "Ficha.pdf";
+
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+
+      setTimeout(
+        () => URL.revokeObjectURL(url),
+        3000
+      );
+    }
+
+    function esperarLote(ms) {
+      return new Promise(
+        resolve =>
+          setTimeout(resolve, ms)
+      );
+    }
+
 
     async function generarTodo() {
       const dni = document.getElementById("alumno").value;
