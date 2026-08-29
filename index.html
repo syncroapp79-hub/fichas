@@ -4,42 +4,158 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Fichas Individuales</title>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; padding: 10px; color: #333; margin: 0; background: #f4f6f9; }
-    .contenedor { max-width: 800px; margin: 0 auto; }
-    .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 15px; }
-    h2 { font-size: 16px; margin: 0 0 15px 0; color: #1a73e8; }
-    label { display: block; font-weight: bold; margin-top: 12px; margin-bottom: 5px; color: #555; }
-    select, input { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
-    .botonera { display: flex; gap: 10px; flex-wrap: wrap; }
-    .botonera button { flex: 1; min-width: 120px; }
-    button { padding: 12px; margin-top: 10px; cursor: pointer; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; transition: background 0.2s; }
-    button.primary { background: #1a73e8; color: white; }
-    button.primary:hover { background: #1557b0; }
-    button.success { background: #34a853; color: white; }
-    button.success:hover { background: #2d8f47; }
-    button.secondary { background: #e0e0e0; color: #333; }
-    button.secondary:hover { background: #d0d0d0; }
-    button:disabled { opacity: 0.5; cursor: wait; }
-    .status { margin-top: 15px; padding: 10px; border-radius: 8px; background: #f0f0f0; white-space: pre-wrap; font-size: 12px; text-align: center; }
-    .status.ok { background: #d9ead3; color: #274e13; border: 1px solid #b7d1a3; }
-    .status.err { background: #f4cccc; color: #990000; border: 1px solid #eababa; }
-    .status.cargando { background: #e8f0fe; color: #1a73e8; border: 1px solid #b7d1a3; }
-    .oculto { display: none !important; }
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      padding: 10px;
+      color: #333;
+      margin: 0;
+      background: #f4f6f9;
+    }
+
+    .contenedor {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 0 0 15px 0;
+      color: #1a73e8;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .botonera {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .botonera button {
+      flex: 0 1 auto;
+      min-width: 180px;
+    }
+
+    button {
+      padding: 12px;
+      margin-top: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    button.primary {
+      background: #1a73e8;
+      color: white;
+    }
+
+    button.primary:hover {
+      background: #1557b0;
+    }
+
+    button.success {
+      background: #34a853;
+      color: white;
+    }
+
+    button.success:hover {
+      background: #2d8f47;
+    }
+
+    button.secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    button.secondary:hover {
+      background: #d0d0d0;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f0f0f0;
+      white-space: pre-wrap;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .status.ok {
+      background: #d9ead3;
+      color: #274e13;
+      border: 1px solid #b7d1a3;
+    }
+
+    .status.err {
+      background: #f4cccc;
+      color: #990000;
+      border: 1px solid #eababa;
+    }
+
+    .status.cargando {
+      background: #e8f0fe;
+      color: #1a73e8;
+      border: 1px solid #b7d1a3;
+    }
+
+    .oculto {
+      display: none !important;
+    }
 
     .modo-selector {
       display: flex;
+      justify-content: center;
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
 
     .modo-selector button {
-      flex: 1;
+      flex: 0 1 auto;
       min-width: 180px;
       margin-top: 0;
     }
@@ -88,14 +204,16 @@
 
     .acciones-lista {
       display: flex;
+      justify-content: center;
+      align-items: center;
       gap: 8px;
       flex-wrap: wrap;
       margin-top: 10px;
     }
 
     .acciones-lista button {
-      flex: 1;
-      min-width: 130px;
+      flex: 0 1 auto;
+      min-width: 180px;
       margin-top: 0;
     }
 
@@ -104,696 +222,2009 @@
       font-size: 12px;
       color: #555;
       font-weight: bold;
+      text-align: center;
     }
 
-    #panelPdf { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f6f9; z-index: 100; overflow-y: auto; padding: 10px; }
-    .toolbar-pdf { display: flex; gap: 8px; margin-bottom: 10px; position: sticky; top: 0; background: #f4f6f9; padding: 5px 0; z-index: 10; }
-    .toolbar-pdf button { margin-top: 0; flex: 1; }
-    .pagina-pdf { width: 100%; margin-bottom: 10px; background: white; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 5px; }
-    .pagina-pdf canvas { display: block; max-width: 100%; height: auto !important; margin: 0 auto; }
+    #panelPdf {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f4f6f9;
+      z-index: 100;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .toolbar-pdf {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      position: sticky;
+      top: 0;
+      background: #f4f6f9;
+      padding: 5px 0;
+      z-index: 10;
+    }
+
+    .toolbar-pdf button {
+      margin-top: 0;
+      flex: 0 1 auto;
+      min-width: 160px;
+    }
+
+    .pagina-pdf {
+      width: 100%;
+      margin-bottom: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      padding: 5px;
+    }
+
+    .pagina-pdf canvas {
+      display: block;
+      max-width: 100%;
+      height: auto !important;
+      margin: 0 auto;
+    }
   </style>
 </head>
 
 <body>
+
   <div class="contenedor">
+
     <div id="panelFormulario" class="card">
+
       <h2>📋 Generar Fichas Individuales</h2>
 
       <div class="modo-selector">
-        <button id="btnModoIndividual" class="primary" type="button" onclick="cambiarModoFicha('individual')">
+
+        <button
+          id="btnModoIndividual"
+          class="primary"
+          type="button"
+          onclick="cambiarModoFicha('individual')">
           👤 Ficha por alumno
         </button>
 
-        <button id="btnModoLote" class="secondary" type="button" onclick="cambiarModoFicha('lote')">
+        <button
+          id="btnModoLote"
+          class="secondary"
+          type="button"
+          onclick="cambiarModoFicha('lote')">
           👥 Varias fichas
         </button>
+
       </div>
 
-      <!-- Mantiene la opción original con vista previa -->
+
+      <!-- ===================================================== -->
+      <!-- FICHA INDIVIDUAL -->
+      <!-- ===================================================== -->
+
       <div id="modoIndividual">
+
         <label>1. Curso y División</label>
-        <select id="cursoDivision" onchange="cargarAlumnos()">
-          <option value="">Cargando cursos...</option>
+
+        <select
+          id="cursoDivision"
+          onchange="cargarAlumnos()">
+
+          <option value="">
+            Cargando cursos...
+          </option>
+
         </select>
+
 
         <label>2. Alumno</label>
+
         <select id="alumno">
-          <option value="">Seleccione un alumno</option>
+
+          <option value="">
+            Seleccione un alumno
+          </option>
+
         </select>
+
 
         <div class="botonera">
-          <button id="btnTodo" class="primary" onclick="generarTodo()">📄 Generar Ficha</button>
-          <button id="btnMaterias" class="success" onclick="cargarMaterias()">📚 Cargar Materias</button>
+
+          <button
+            id="btnTodo"
+            class="primary"
+            type="button"
+            onclick="generarTodo()">
+
+            📄 Generar Ficha
+
+          </button>
+
         </div>
+
       </div>
 
-      <!-- Nueva opción para generar varias fichas -->
+
+      <!-- ===================================================== -->
+      <!-- GENERACIÓN POR LOTE -->
+      <!-- ===================================================== -->
+
       <div id="modoLote" class="oculto">
+
         <label>1. Curso y División</label>
-        <select id="cursoDivisionLote" onchange="cargarAlumnosLote()">
-          <option value="">Cargando cursos...</option>
+
+        <select
+          id="cursoDivisionLote"
+          onchange="cargarAlumnosLote()">
+
+          <option value="">
+            Cargando cursos...
+          </option>
+
         </select>
+
 
         <label>2. Seleccionar alumnos</label>
 
+
         <div class="acciones-lista">
-          <button class="secondary" type="button" onclick="seleccionarTodosLote(true)">☑️ Seleccionar todos</button>
-          <button class="secondary" type="button" onclick="seleccionarTodosLote(false)">⬜ Quitar selección</button>
+
+          <button
+            id="btnSeleccionLote"
+            class="secondary"
+            type="button"
+            onclick="alternarSeleccionLote()">
+
+            ☑️ Seleccionar todos
+
+          </button>
+
         </div>
 
-        <div id="contadorSeleccionadosLote" class="contador">0 seleccionados</div>
 
-        <div id="listaAlumnosLote" class="lista-alumnos">
-          <div style="padding:12px;color:#666;">Seleccione un curso.</div>
+        <div
+          id="contadorSeleccionadosLote"
+          class="contador">
+
+          0 seleccionados
+
         </div>
+
+
+        <div
+          id="listaAlumnosLote"
+          class="lista-alumnos">
+
+          <div style="padding:12px;color:#666;">
+            Seleccione un curso.
+          </div>
+
+        </div>
+
 
         <div class="botonera">
-          <button id="btnGenerarLote" class="primary" onclick="generarSeleccionadosLote()">📄 Generar seleccionadas</button>
+
+          <button
+            id="btnGenerarLote"
+            class="primary"
+            type="button"
+            onclick="generarSeleccionadosLote()">
+
+            📄 Generar seleccionadas
+
+          </button>
+
         </div>
+
       </div>
 
-      <div class="status oculto" id="status"></div>
+
+      <div
+        class="status oculto"
+        id="status">
+      </div>
+
     </div>
 
-    <div id="panelPdf" class="oculto">
+
+    <!-- ===================================================== -->
+    <!-- VISOR PDF -->
+    <!-- ===================================================== -->
+
+    <div
+      id="panelPdf"
+      class="oculto">
+
       <div class="toolbar-pdf">
-        <button class="primary" onclick="descargarPdfLocal()">⬇️ Descargar PDF</button>
-        <button class="secondary" onclick="cerrarVisor()">✖️ Cerrar</button>
+
+        <button
+          class="primary"
+          type="button"
+          onclick="descargarPdfLocal()">
+
+          ⬇️ Descargar PDF
+
+        </button>
+
+
+        <button
+          class="secondary"
+          type="button"
+          onclick="cerrarVisor()">
+
+          ✖️ Cerrar
+
+        </button>
+
       </div>
-      <div id="estadoRender" class="status cargando">Preparando visor...</div>
+
+
+      <div
+        id="estadoRender"
+        class="status cargando">
+
+        Preparando visor...
+
+      </div>
+
+
       <div id="visorPdf"></div>
+
     </div>
+
   </div>
 
+
   <script>
+
     // ============================================================
-    // ⚠️ CONFIGURACIÓN - PON AQUÍ LA URL DE TU WEB APP
+    // CONFIGURACIÓN API
     // ============================================================
-    // 👇 REEMPLAZA ESTA URL CON LA QUE COPIASSTE AL PUBLICAR
-    const URL_API = "https://script.google.com/macros/s/AKfycbwJFdHapmYul6q3WbtXU44-D121__Ca6Ad0nbexTwIBZoKZzyb2A1OlElQM82M67HU/exec";
+
+    const URL_API =
+      "https://script.google.com/macros/s/AKfycbwJFdHapmYul6q3WbtXU44-D121__Ca6Ad0nbexTwIBZoKZzyb2A1OlElQM82M67HU/exec";
+
 
     const CODIGO_ACCESO =
-      new URLSearchParams(window.location.search).get("acceso") || "";
-    
+      new URLSearchParams(window.location.search)
+        .get("acceso") || "";
+
+
     let pdfBase64Memoria = "";
-    let nombrePdfActual = "Ficha.pdf";
+
+    let nombrePdfActual =
+      "Ficha.pdf";
+
     let ultimoDniGenerado = "";
+
     let ultimoNombreAlumno = "";
-
-    function setStatus(msg, tipo) {
-      const el = document.getElementById("status");
-      if (!msg) { 
-        el.classList.add("oculto"); 
-        return; 
-      }
-      el.classList.remove("oculto");
-      el.textContent = msg;
-      el.className = "status " + (tipo || "");
-    }
-
-    function bloquearBotones(bloquear) {
-      document.getElementById("btnTodo").disabled = bloquear;
-      document.getElementById("btnMaterias").disabled = bloquear;
-      if (bloquear) {
-        document.getElementById("btnTodo").textContent = "⏳ Procesando...";
-      } else {
-        document.getElementById("btnTodo").textContent = "📄 Generar Ficha";
-      }
-    }
-
-    async function llamarAPI(accion, params = {}) {
-      if (!CODIGO_ACCESO) {
-        throw new Error("Falta el código de acceso. Abrí Fichas desde el Panel de Preceptoría.");
-      }
-
-      const url = new URL(URL_API);
-      url.searchParams.append('accion', accion);
-      url.searchParams.append('acceso', CODIGO_ACCESO);
-      Object.keys(params).forEach(key => {
-        url.searchParams.append(key, params[key]);
-      });
-      
-      console.log('📡 Llamando:', url.toString());
-      
-      const response = await fetch(url.toString());
-      
-      if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
-      }
-      
-      const texto = await response.text();
-      console.log('📥 Respuesta:', texto.substring(0, 200));
-      
-      if (!texto.trim().startsWith('{')) {
-        throw new Error('El servidor devolvió HTML. Verifica la URL.');
-      }
-      
-      try {
-        return JSON.parse(texto);
-      } catch (e) {
-        throw new Error('Error al procesar la respuesta del servidor');
-      }
-    }
-
-    async function inicializar() {
-      try {
-        setStatus("🔄 Cargando cursos...", "cargando");
-        const res = await llamarAPI('obtenerCursos');
-        if (!res.ok) throw new Error(res.mensaje);
-        
-        const selectores = [
-          document.getElementById("cursoDivision"),
-          document.getElementById("cursoDivisionLote")
-        ];
-
-        selectores.forEach(sel => {
-          sel.innerHTML = '<option value="">Seleccionar Curso...</option>';
-
-          res.cursos.forEach(c => {
-            const op = document.createElement("option");
-            op.value = c;
-            op.textContent = c;
-            sel.appendChild(op);
-          });
-        });
-        setStatus("✅ " + res.cursos.length + " cursos cargados", "ok");
-      } catch (err) {
-        setStatus("❌ " + err.message, "err");
-        console.error(err);
-      }
-    }
-
-    async function cargarAlumnos() {
-      const cursoDiv = document.getElementById("cursoDivision").value;
-      const selAlu = document.getElementById("alumno");
-      selAlu.innerHTML = '<option value="">Cargando...</option>';
-      setStatus("");
-
-      if (!cursoDiv) { 
-        selAlu.innerHTML = '<option value="">Seleccione un curso</option>'; 
-        return; 
-      }
-
-      try {
-        const res = await llamarAPI('obtenerAlumnos', { cursoDivision: cursoDiv });
-        if (!res.ok) throw new Error(res.mensaje);
-        
-        selAlu.innerHTML = '';
-        if (res.alumnos.length === 0) {
-          selAlu.innerHTML = '<option value="">Sin alumnos</option>';
-          return;
-        }
-        
-        res.alumnos.forEach(a => {
-          const op = document.createElement("option");
-          op.value = a.dni;
-          op.textContent = a.alumno + " (DNI " + a.dni + ")";
-          selAlu.appendChild(op);
-        });
-        setStatus("✅ " + res.alumnos.length + " alumnos cargados", "ok");
-      } catch (err) {
-        selAlu.innerHTML = '<option value="">Error</option>';
-        setStatus("❌ " + err.message, "err");
-        console.error(err);
-      }
-    }
 
     let ALUMNOS_LOTE = [];
 
-    function cambiarModoFicha(modo) {
-      const individual = document.getElementById("modoIndividual");
-      const lote = document.getElementById("modoLote");
-      const btnIndividual = document.getElementById("btnModoIndividual");
-      const btnLote = document.getElementById("btnModoLote");
 
-      if (modo === "lote") {
-        individual.classList.add("oculto");
-        lote.classList.remove("oculto");
-        btnIndividual.className = "secondary";
-        btnLote.className = "primary";
-      } else {
-        lote.classList.add("oculto");
-        individual.classList.remove("oculto");
-        btnLote.className = "secondary";
-        btnIndividual.className = "primary";
+    // ============================================================
+    // STATUS
+    // ============================================================
+
+    function setStatus(msg, tipo) {
+
+      const el =
+        document.getElementById("status");
+
+      if (!msg) {
+
+        el.classList.add("oculto");
+
+        return;
+
       }
 
-      setStatus("");
+      el.classList.remove("oculto");
+
+      el.textContent = msg;
+
+      el.className =
+        "status " + (tipo || "");
+
     }
 
-    async function cargarAlumnosLote() {
-      const cursoDiv = document.getElementById("cursoDivisionLote").value;
-      const cont = document.getElementById("listaAlumnosLote");
 
-      ALUMNOS_LOTE = [];
-      cont.innerHTML = '<div style="padding:12px;">Cargando...</div>';
-      actualizarContadorLote();
-      setStatus("");
+    // ============================================================
+    // BLOQUEAR BOTÓN
+    // ============================================================
 
-      if (!cursoDiv) {
-        cont.innerHTML =
-          '<div style="padding:12px;color:#666;">Seleccione un curso.</div>';
+    function bloquearBotones(bloquear) {
+
+      const btnTodo =
+        document.getElementById("btnTodo");
+
+      if (!btnTodo) {
         return;
       }
 
-      try {
-        const res =
-          await llamarAPI('obtenerAlumnos', { cursoDivision: cursoDiv });
+      btnTodo.disabled =
+        bloquear;
 
-        if (!res.ok) {
-          throw new Error(res.mensaje);
+      if (bloquear) {
+
+        btnTodo.textContent =
+          "⏳ Procesando...";
+
+      } else {
+
+        btnTodo.textContent =
+          "📄 Generar Ficha";
+
+      }
+
+    }
+
+
+    // ============================================================
+    // LLAMADA API
+    // ============================================================
+
+    async function llamarAPI(
+      accion,
+      params = {}
+    ) {
+
+      if (!CODIGO_ACCESO) {
+
+        throw new Error(
+          "Falta el código de acceso. Abrí Fichas desde el Panel de Preceptoría."
+        );
+
+      }
+
+
+      const url =
+        new URL(URL_API);
+
+
+      url.searchParams.append(
+        "accion",
+        accion
+      );
+
+
+      url.searchParams.append(
+        "acceso",
+        CODIGO_ACCESO
+      );
+
+
+      Object.keys(params).forEach(
+        key => {
+
+          url.searchParams.append(
+            key,
+            params[key]
+          );
+
         }
+      );
 
-        ALUMNOS_LOTE = res.alumnos || [];
-        renderizarListaLote();
+
+      console.log(
+        "📡 Llamando:",
+        url.toString()
+      );
+
+
+      const response =
+        await fetch(
+          url.toString()
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          `Error HTTP: ${response.status}`
+        );
+
+      }
+
+
+      const texto =
+        await response.text();
+
+
+      console.log(
+        "📥 Respuesta:",
+        texto.substring(0, 200)
+      );
+
+
+      if (
+        !texto
+          .trim()
+          .startsWith("{")
+      ) {
+
+        throw new Error(
+          "El servidor devolvió HTML. Verifica la URL."
+        );
+
+      }
+
+
+      try {
+
+        return JSON.parse(
+          texto
+        );
+
+      } catch (e) {
+
+        throw new Error(
+          "Error al procesar la respuesta del servidor"
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // INICIALIZACIÓN
+    // ============================================================
+
+    async function inicializar() {
+
+      try {
 
         setStatus(
-          "✅ " + ALUMNOS_LOTE.length + " alumnos cargados",
+          "🔄 Cargando cursos...",
+          "cargando"
+        );
+
+
+        const res =
+          await llamarAPI(
+            "obtenerCursos"
+          );
+
+
+        if (!res.ok) {
+
+          throw new Error(
+            res.mensaje
+          );
+
+        }
+
+
+        const selectores = [
+
+          document.getElementById(
+            "cursoDivision"
+          ),
+
+          document.getElementById(
+            "cursoDivisionLote"
+          )
+
+        ];
+
+
+        selectores.forEach(
+          sel => {
+
+            sel.innerHTML =
+              '<option value="">Seleccionar Curso...</option>';
+
+
+            res.cursos.forEach(
+              c => {
+
+                const op =
+                  document.createElement(
+                    "option"
+                  );
+
+                op.value = c;
+
+                op.textContent = c;
+
+                sel.appendChild(op);
+
+              }
+            );
+
+          }
+        );
+
+
+        setStatus(
+          "✅ " +
+          res.cursos.length +
+          " cursos cargados",
           "ok"
         );
 
+
       } catch (err) {
+
+        setStatus(
+          "❌ " + err.message,
+          "err"
+        );
+
+        console.error(err);
+
+      }
+
+    }
+
+
+    // ============================================================
+    // CARGAR ALUMNOS - INDIVIDUAL
+    // ============================================================
+
+    async function cargarAlumnos() {
+
+      const cursoDiv =
+        document.getElementById(
+          "cursoDivision"
+        ).value;
+
+
+      const selAlu =
+        document.getElementById(
+          "alumno"
+        );
+
+
+      selAlu.innerHTML =
+        '<option value="">Cargando...</option>';
+
+
+      setStatus("");
+
+
+      if (!cursoDiv) {
+
+        selAlu.innerHTML =
+          '<option value="">Seleccione un curso</option>';
+
+        return;
+
+      }
+
+
+      try {
+
+        const res =
+          await llamarAPI(
+            "obtenerAlumnos",
+            {
+              cursoDivision:
+                cursoDiv
+            }
+          );
+
+
+        if (!res.ok) {
+
+          throw new Error(
+            res.mensaje
+          );
+
+        }
+
+
+        selAlu.innerHTML = "";
+
+
+        if (
+          res.alumnos.length === 0
+        ) {
+
+          selAlu.innerHTML =
+            '<option value="">Sin alumnos</option>';
+
+          return;
+
+        }
+
+
+        res.alumnos.forEach(
+          a => {
+
+            const op =
+              document.createElement(
+                "option"
+              );
+
+
+            op.value =
+              a.dni;
+
+
+            op.textContent =
+              a.alumno +
+              " (DNI " +
+              a.dni +
+              ")";
+
+
+            selAlu.appendChild(op);
+
+          }
+        );
+
+
+        setStatus(
+          "✅ " +
+          res.alumnos.length +
+          " alumnos cargados",
+          "ok"
+        );
+
+
+      } catch (err) {
+
+        selAlu.innerHTML =
+          '<option value="">Error</option>';
+
+
+        setStatus(
+          "❌ " + err.message,
+          "err"
+        );
+
+
+        console.error(err);
+
+      }
+
+    }
+
+
+    // ============================================================
+    // CAMBIO DE MODO
+    // ============================================================
+
+    function cambiarModoFicha(
+      modo
+    ) {
+
+      const individual =
+        document.getElementById(
+          "modoIndividual"
+        );
+
+
+      const lote =
+        document.getElementById(
+          "modoLote"
+        );
+
+
+      const btnIndividual =
+        document.getElementById(
+          "btnModoIndividual"
+        );
+
+
+      const btnLote =
+        document.getElementById(
+          "btnModoLote"
+        );
+
+
+      if (
+        modo === "lote"
+      ) {
+
+        individual
+          .classList
+          .add("oculto");
+
+
+        lote
+          .classList
+          .remove("oculto");
+
+
+        btnIndividual.className =
+          "secondary";
+
+
+        btnLote.className =
+          "primary";
+
+
+      } else {
+
+        lote
+          .classList
+          .add("oculto");
+
+
+        individual
+          .classList
+          .remove("oculto");
+
+
+        btnLote.className =
+          "secondary";
+
+
+        btnIndividual.className =
+          "primary";
+
+      }
+
+
+      setStatus("");
+
+    }
+
+
+    // ============================================================
+    // CARGAR ALUMNOS - LOTE
+    // ============================================================
+
+    async function cargarAlumnosLote() {
+
+      const cursoDiv =
+        document.getElementById(
+          "cursoDivisionLote"
+        ).value;
+
+
+      const cont =
+        document.getElementById(
+          "listaAlumnosLote"
+        );
+
+
+      ALUMNOS_LOTE = [];
+
+
+      cont.innerHTML =
+        '<div style="padding:12px;">Cargando...</div>';
+
+
+      actualizarContadorLote();
+
+      setStatus("");
+
+
+      if (!cursoDiv) {
+
+        cont.innerHTML =
+          '<div style="padding:12px;color:#666;">Seleccione un curso.</div>';
+
+        return;
+
+      }
+
+
+      try {
+
+        const res =
+          await llamarAPI(
+            "obtenerAlumnos",
+            {
+              cursoDivision:
+                cursoDiv
+            }
+          );
+
+
+        if (!res.ok) {
+
+          throw new Error(
+            res.mensaje
+          );
+
+        }
+
+
+        ALUMNOS_LOTE =
+          res.alumnos || [];
+
+
+        renderizarListaLote();
+
+
+        setStatus(
+          "✅ " +
+          ALUMNOS_LOTE.length +
+          " alumnos cargados",
+          "ok"
+        );
+
+
+      } catch (err) {
+
         cont.innerHTML =
           '<div style="padding:12px;color:#990000;">Error al cargar alumnos.</div>';
 
-        setStatus("❌ " + err.message, "err");
+
+        setStatus(
+          "❌ " + err.message,
+          "err"
+        );
+
+
         console.error(err);
+
       }
+
     }
 
+
+    // ============================================================
+    // RENDER LISTA
+    // ============================================================
+
     function renderizarListaLote() {
-      const cont = document.getElementById("listaAlumnosLote");
+
+      const cont =
+        document.getElementById(
+          "listaAlumnosLote"
+        );
+
+
       cont.innerHTML = "";
 
-      if (!ALUMNOS_LOTE.length) {
+
+      if (
+        !ALUMNOS_LOTE.length
+      ) {
+
         cont.innerHTML =
           '<div style="padding:12px;color:#666;">Sin alumnos en este curso.</div>';
 
+
         actualizarContadorLote();
+
         return;
+
       }
 
-      ALUMNOS_LOTE.forEach((a, i) => {
-        const fila = document.createElement("label");
-        fila.className = "fila-alumno";
 
-        const chk = document.createElement("input");
-        chk.type = "checkbox";
-        chk.className = "chk-alumno-lote";
-        chk.dataset.indice = String(i);
-        chk.addEventListener("change", actualizarContadorLote);
+      ALUMNOS_LOTE.forEach(
+        (a, i) => {
 
-        const info = document.createElement("div");
-        info.className = "fila-alumno-info";
+          const fila =
+            document.createElement(
+              "label"
+            );
 
-        const strong = document.createElement("strong");
-        strong.textContent = a.alumno || "";
 
-        const small = document.createElement("small");
-        small.textContent = "DNI: " + (a.dni || "");
+          fila.className =
+            "fila-alumno";
 
-        info.appendChild(strong);
-        info.appendChild(small);
 
-        fila.appendChild(chk);
-        fila.appendChild(info);
+          const chk =
+            document.createElement(
+              "input"
+            );
 
-        cont.appendChild(fila);
-      });
+
+          chk.type =
+            "checkbox";
+
+
+          chk.className =
+            "chk-alumno-lote";
+
+
+          chk.dataset.indice =
+            String(i);
+
+
+          chk.addEventListener(
+            "change",
+            actualizarContadorLote
+          );
+
+
+          const info =
+            document.createElement(
+              "div"
+            );
+
+
+          info.className =
+            "fila-alumno-info";
+
+
+          const strong =
+            document.createElement(
+              "strong"
+            );
+
+
+          strong.textContent =
+            a.alumno || "";
+
+
+          const small =
+            document.createElement(
+              "small"
+            );
+
+
+          small.textContent =
+            "DNI: " +
+            (a.dni || "");
+
+
+          info.appendChild(
+            strong
+          );
+
+
+          info.appendChild(
+            small
+          );
+
+
+          fila.appendChild(
+            chk
+          );
+
+
+          fila.appendChild(
+            info
+          );
+
+
+          cont.appendChild(
+            fila
+          );
+
+        }
+      );
+
 
       actualizarContadorLote();
+
     }
 
-    function seleccionarTodosLote(estado) {
-      document
-        .querySelectorAll(".chk-alumno-lote")
-        .forEach(chk => {
-          chk.checked = estado;
-        });
+
+    // ============================================================
+    // SELECCIONAR / QUITAR TODOS CON UN SOLO BOTÓN
+    // ============================================================
+
+    function alternarSeleccionLote() {
+
+      const checks =
+        Array.from(
+          document.querySelectorAll(
+            ".chk-alumno-lote"
+          )
+        );
+
+
+      if (!checks.length) {
+
+        return;
+
+      }
+
+
+      const todosSeleccionados =
+        checks.every(
+          chk => chk.checked
+        );
+
+
+      checks.forEach(
+        chk => {
+
+          chk.checked =
+            !todosSeleccionados;
+
+        }
+      );
+
 
       actualizarContadorLote();
+
     }
+
+
+    function actualizarBotonSeleccionLote() {
+
+      const btn =
+        document.getElementById(
+          "btnSeleccionLote"
+        );
+
+
+      if (!btn) {
+
+        return;
+
+      }
+
+
+      const checks =
+        Array.from(
+          document.querySelectorAll(
+            ".chk-alumno-lote"
+          )
+        );
+
+
+      if (!checks.length) {
+
+        btn.textContent =
+          "☑️ Seleccionar todos";
+
+        return;
+
+      }
+
+
+      const todosSeleccionados =
+        checks.every(
+          chk => chk.checked
+        );
+
+
+      btn.textContent =
+        todosSeleccionados
+          ? "⬜ Quitar selección"
+          : "☑️ Seleccionar todos";
+
+    }
+
+
+    // ============================================================
+    // CONTADOR
+    // ============================================================
 
     function actualizarContadorLote() {
+
       const cantidad =
-        document.querySelectorAll(".chk-alumno-lote:checked").length;
+        document.querySelectorAll(
+          ".chk-alumno-lote:checked"
+        ).length;
+
 
       const el =
-        document.getElementById("contadorSeleccionadosLote");
+        document.getElementById(
+          "contadorSeleccionadosLote"
+        );
+
 
       if (el) {
+
         el.textContent =
           cantidad +
-          (cantidad === 1 ? " seleccionado" : " seleccionados");
+          (
+            cantidad === 1
+              ? " seleccionado"
+              : " seleccionados"
+          );
+
       }
+
+
+      actualizarBotonSeleccionLote();
+
     }
+
+
+    // ============================================================
+    // OBTENER SELECCIONADOS
+    // ============================================================
 
     function obtenerSeleccionadosLote() {
+
       return Array.from(
-        document.querySelectorAll(".chk-alumno-lote:checked")
+        document.querySelectorAll(
+          ".chk-alumno-lote:checked"
+        )
       )
-      .map(chk => {
-        const indice = Number(chk.dataset.indice);
-        return ALUMNOS_LOTE[indice];
-      })
+
+      .map(
+        chk => {
+
+          const indice =
+            Number(
+              chk.dataset.indice
+            );
+
+
+          return ALUMNOS_LOTE[
+            indice
+          ];
+
+        }
+      )
+
       .filter(Boolean);
+
     }
 
+
+    // ============================================================
+    // GENERAR FICHAS POR LOTE
+    // ============================================================
+
     async function generarSeleccionadosLote() {
+
       const cursoDiv =
-        document.getElementById("cursoDivisionLote").value;
+        document.getElementById(
+          "cursoDivisionLote"
+        ).value;
+
 
       const seleccionados =
         obtenerSeleccionadosLote();
 
+
       const btn =
-        document.getElementById("btnGenerarLote");
+        document.getElementById(
+          "btnGenerarLote"
+        );
+
 
       if (!cursoDiv) {
-        return setStatus("⚠️ Seleccioná un curso.", "err");
+
+        return setStatus(
+          "⚠️ Seleccioná un curso.",
+          "err"
+        );
+
       }
 
-      if (!seleccionados.length) {
+
+      if (
+        !seleccionados.length
+      ) {
+
         return setStatus(
           "⚠️ Seleccioná al menos un alumno.",
           "err"
         );
+
       }
 
+
       btn.disabled = true;
-      btn.textContent = "⏳ Procesando...";
+
+      btn.textContent =
+        "⏳ Procesando...";
+
 
       let generadas = 0;
+
       let errores = 0;
+
       const detalle = [];
 
-      for (let i = 0; i < seleccionados.length; i++) {
-        const alumno = seleccionados[i];
-        const dni = alumno.dni;
+
+      for (
+        let i = 0;
+        i < seleccionados.length;
+        i++
+      ) {
+
+        const alumno =
+          seleccionados[i];
+
+
+        const dni =
+          alumno.dni;
+
+
         const nombre =
-          alumno.alumno || ("DNI " + dni);
+          alumno.alumno ||
+          ("DNI " + dni);
+
 
         setStatus(
           "⏳ " +
           (i + 1) +
           " de " +
           seleccionados.length +
-          "\\nGenerando ficha de " +
+          "\nGenerando ficha de " +
           nombre +
           "...",
           "cargando"
         );
 
+
         try {
+
           const res =
             await llamarAPI(
-              'generarFicha',
-              { dni: dni }
+              "generarFicha",
+              {
+                dni: dni
+              }
             );
+
 
           if (!res.ok) {
-            throw new Error(res.mensaje);
+
+            throw new Error(
+              res.mensaje
+            );
+
           }
 
+
+          // Las materias siguen cargándose automáticamente.
           try {
+
             await llamarAPI(
-              'cargarMaterias',
-              { dni: dni }
+              "cargarMaterias",
+              {
+                dni: dni
+              }
             );
+
           } catch (e) {
-            console.warn("Materias:", e);
+
+            console.warn(
+              "Materias:",
+              e
+            );
+
           }
+
 
           const resPDF =
             await llamarAPI(
-              'exportarPDF',
-              { dni: dni }
+              "exportarPDF",
+              {
+                dni: dni
+              }
             );
 
+
           if (!resPDF.ok) {
-            throw new Error(resPDF.mensaje);
+
+            throw new Error(
+              resPDF.mensaje
+            );
+
           }
+
 
           descargarPdfLote(
             resPDF.base64,
             resPDF.nombreArchivo ||
-              ("Ficha - " + nombre + ".pdf")
+            (
+              "Ficha - " +
+              nombre +
+              ".pdf"
+            )
           );
+
 
           generadas++;
 
-          await esperarLote(500);
+
+          await esperarLote(
+            500
+          );
+
 
         } catch (err) {
+
           errores++;
+
+
           detalle.push(
             nombre +
             " → " +
             err.message
           );
+
+
           console.error(err);
+
         }
+
       }
 
+
       btn.disabled = false;
+
+
       btn.textContent =
         "📄 Generar seleccionadas";
 
+
       let msg =
-        "✅ Proceso terminado.\\n\\n" +
+        "✅ Proceso terminado.\n\n" +
         "Fichas generadas: " +
         generadas +
-        "\\nErrores: " +
+        "\nErrores: " +
         errores;
 
-      if (detalle.length) {
+
+      if (
+        detalle.length
+      ) {
+
         msg +=
-          "\\n\\n" +
-          detalle.join("\\n");
+          "\n\n" +
+          detalle.join("\n");
+
       }
+
 
       setStatus(
         msg,
-        errores ? "err" : "ok"
+        errores
+          ? "err"
+          : "ok"
       );
+
     }
+
+
+    // ============================================================
+    // DESCARGA LOTE
+    // ============================================================
 
     function descargarPdfLote(
       base64,
       nombre
     ) {
+
       const bytes =
-        base64ABytes(base64);
+        base64ABytes(
+          base64
+        );
+
 
       const blob =
         new Blob(
           [bytes],
-          { type: "application/pdf" }
+          {
+            type:
+              "application/pdf"
+          }
         );
 
+
       const url =
-        URL.createObjectURL(blob);
+        URL.createObjectURL(
+          blob
+        );
+
 
       const enlace =
-        document.createElement("a");
+        document.createElement(
+          "a"
+        );
 
-      enlace.href = url;
+
+      enlace.href =
+        url;
+
+
       enlace.download =
-        nombre || "Ficha.pdf";
+        nombre ||
+        "Ficha.pdf";
 
-      document.body.appendChild(enlace);
+
+      document.body
+        .appendChild(
+          enlace
+        );
+
+
       enlace.click();
+
+
       enlace.remove();
 
+
       setTimeout(
-        () => URL.revokeObjectURL(url),
+        () =>
+          URL.revokeObjectURL(
+            url
+          ),
         3000
       );
+
     }
+
 
     function esperarLote(ms) {
+
       return new Promise(
         resolve =>
-          setTimeout(resolve, ms)
+          setTimeout(
+            resolve,
+            ms
+          )
       );
+
     }
 
+
+    // ============================================================
+    // GENERAR FICHA INDIVIDUAL
+    // ============================================================
 
     async function generarTodo() {
-      const dni = document.getElementById("alumno").value;
-      const cursoDiv = document.getElementById("cursoDivision").value;
-      
-      if (!dni || !cursoDiv) {
-        return setStatus("⚠️ Seleccioná Curso y Alumno.", "err");
+
+      const dni =
+        document.getElementById(
+          "alumno"
+        ).value;
+
+
+      const cursoDiv =
+        document.getElementById(
+          "cursoDivision"
+        ).value;
+
+
+      if (
+        !dni ||
+        !cursoDiv
+      ) {
+
+        return setStatus(
+          "⚠️ Seleccioná Curso y Alumno.",
+          "err"
+        );
+
       }
 
-      ultimoDniGenerado = dni;
-      
-      const selAlu = document.getElementById("alumno");
-      const nombreCompleto = selAlu.options[selAlu.selectedIndex]?.text || "";
-      ultimoNombreAlumno = nombreCompleto.split(" (DNI")[0] || "";
 
-      setStatus("🔄 Generando ficha...", "cargando");
-      bloquearBotones(true);
-      pdfBase64Memoria = "";
+      ultimoDniGenerado =
+        dni;
+
+
+      const selAlu =
+        document.getElementById(
+          "alumno"
+        );
+
+
+      const nombreCompleto =
+        selAlu.options[
+          selAlu.selectedIndex
+        ]?.text || "";
+
+
+      ultimoNombreAlumno =
+        nombreCompleto
+          .split(" (DNI")[0] ||
+        "";
+
+
+      setStatus(
+        "🔄 Generando ficha...",
+        "cargando"
+      );
+
+
+      bloquearBotones(
+        true
+      );
+
+
+      pdfBase64Memoria =
+        "";
+
 
       try {
-        const res = await llamarAPI('generarFicha', { dni: dni });
-        if (!res.ok) throw new Error(res.mensaje);
-        
-        setStatus("✅ Ficha generada. Cargando materias...", "ok");
-        
-        let materiasCargadas = 0;
+
+        const res =
+          await llamarAPI(
+            "generarFicha",
+            {
+              dni: dni
+            }
+          );
+
+
+        if (!res.ok) {
+
+          throw new Error(
+            res.mensaje
+          );
+
+        }
+
+
+        setStatus(
+          "✅ Ficha generada. Cargando materias...",
+          "ok"
+        );
+
+
+        let materiasCargadas =
+          0;
+
+
         try {
-          const resMaterias = await llamarAPI('cargarMaterias', { dni: dni });
-          if (resMaterias.ok) {
-            materiasCargadas = resMaterias.cantidad || 0;
-            setStatus("✅ Materias cargadas: " + materiasCargadas + ". Generando PDF...", "ok");
+
+          const resMaterias =
+            await llamarAPI(
+              "cargarMaterias",
+              {
+                dni: dni
+              }
+            );
+
+
+          if (
+            resMaterias.ok
+          ) {
+
+            materiasCargadas =
+              resMaterias.cantidad ||
+              0;
+
+
+            setStatus(
+              "✅ Materias cargadas: " +
+              materiasCargadas +
+              ". Generando PDF...",
+              "ok"
+            );
+
+
           } else {
-            setStatus("⚠️ " + resMaterias.mensaje + ". Generando PDF...", "ok");
+
+            setStatus(
+              "⚠️ " +
+              resMaterias.mensaje +
+              ". Generando PDF...",
+              "ok"
+            );
+
           }
+
+
         } catch (e) {
-          setStatus("⚠️ Error cargando materias: " + e.message + ". Generando PDF...", "ok");
+
+          setStatus(
+            "⚠️ Error cargando materias: " +
+            e.message +
+            ". Generando PDF...",
+            "ok"
+          );
+
         }
-        
-        const resPDF = await llamarAPI('exportarPDF', { dni: dni });
-        if (!resPDF.ok) throw new Error(resPDF.mensaje);
-        
-        pdfBase64Memoria = resPDF.base64;
-        nombrePdfActual = resPDF.nombreArchivo || "Ficha.pdf";
-        
-        setStatus("✅ Ficha completa con " + materiasCargadas + " materias. Abriendo visor...", "ok");
-        
-        await mostrarVisorPdf(pdfBase64Memoria);
-        
-        bloquearBotones(false);
-        
+
+
+        const resPDF =
+          await llamarAPI(
+            "exportarPDF",
+            {
+              dni: dni
+            }
+          );
+
+
+        if (!resPDF.ok) {
+
+          throw new Error(
+            resPDF.mensaje
+          );
+
+        }
+
+
+        pdfBase64Memoria =
+          resPDF.base64;
+
+
+        nombrePdfActual =
+          resPDF.nombreArchivo ||
+          "Ficha.pdf";
+
+
+        setStatus(
+          "✅ Ficha completa con " +
+          materiasCargadas +
+          " materias. Abriendo visor...",
+          "ok"
+        );
+
+
+        await mostrarVisorPdf(
+          pdfBase64Memoria
+        );
+
+
+        bloquearBotones(
+          false
+        );
+
+
       } catch (err) {
-        bloquearBotones(false);
-        setStatus("❌ " + err.message, "err");
+
+        bloquearBotones(
+          false
+        );
+
+
+        setStatus(
+          "❌ " + err.message,
+          "err"
+        );
+
+
         console.error(err);
+
       }
+
     }
 
-    async function cargarMaterias() {
-      let dni = document.getElementById("alumno").value;
-      if (!dni) {
-        dni = ultimoDniGenerado;
-      }
-      
-      if (!dni) {
-        return setStatus("⚠️ Primero generá una ficha o seleccioná un alumno.", "err");
-      }
 
-      setStatus("🔄 Cargando materias...", "cargando");
-      document.getElementById("btnMaterias").disabled = true;
-      document.getElementById("btnMaterias").textContent = "⏳ Cargando...";
+    // ============================================================
+    // VISOR PDF
+    // ============================================================
 
-      try {
-        const res = await llamarAPI('cargarMaterias', { dni: dni });
-        document.getElementById("btnMaterias").disabled = false;
-        document.getElementById("btnMaterias").textContent = "📚 Cargar Materias";
-        
-        if (!res.ok) throw new Error(res.mensaje);
-        
-        setStatus("✅ " + res.mensaje + ". Actualizando PDF...", "cargando");
-        
-        const resPDF = await llamarAPI('exportarPDF');
-        if (resPDF.ok) {
-          pdfBase64Memoria = resPDF.base64;
-          nombrePdfActual = resPDF.nombreArchivo || "Ficha.pdf";
-          setStatus("✅ PDF actualizado con materias", "ok");
-          await mostrarVisorPdf(pdfBase64Memoria);
-        } else {
-          setStatus("✅ " + res.mensaje + " | ⚠️ Error al actualizar PDF", "ok");
-        }
-      } catch (err) {
-        document.getElementById("btnMaterias").disabled = false;
-        document.getElementById("btnMaterias").textContent = "📚 Cargar Materias";
-        setStatus("❌ " + err.message, "err");
-        console.error(err);
-      }
-    }
+    async function mostrarVisorPdf(
+      base64
+    ) {
 
-    async function mostrarVisorPdf(base64) {
-      document.getElementById("panelPdf").classList.remove("oculto");
-      document.getElementById("estadoRender").classList.remove("oculto");
-      document.getElementById("estadoRender").textContent = "Abriendo PDF...";
-      
-      const bytes = base64ABytes(base64);
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      document
+        .getElementById(
+          "panelPdf"
+        )
+        .classList
+        .remove("oculto");
+
+
+      document
+        .getElementById(
+          "estadoRender"
+        )
+        .classList
+        .remove("oculto");
+
+
+      document
+        .getElementById(
+          "estadoRender"
+        )
+        .textContent =
+        "Abriendo PDF...";
+
+
+      const bytes =
+        base64ABytes(
+          base64
+        );
+
+
+      pdfjsLib
+        .GlobalWorkerOptions
+        .workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
 
       try {
-        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-        const contenedor = document.getElementById("visorPdf");
-        contenedor.innerHTML = "";
 
-        for (let num = 1; num <= pdf.numPages; num++) {
-          document.getElementById("estadoRender").textContent = `Página ${num} de ${pdf.numPages}...`;
-          
-          const pagina = await pdf.getPage(num);
-          const viewportBase = pagina.getViewport({ scale: 1 });
-          const ancho = contenedor.clientWidth - 10;
-          const escala = ancho / viewportBase.width;
-          const viewport = pagina.getViewport({ scale: escala });
+        const pdf =
+          await pdfjsLib
+            .getDocument({
+              data: bytes
+            })
+            .promise;
 
-          const envoltorio = document.createElement("div");
-          envoltorio.className = "pagina-pdf";
 
-          const canvas = document.createElement("canvas");
-          const contexto = canvas.getContext("2d");
-          
-          const ratio = window.devicePixelRatio || 1;
-          canvas.width = viewport.width * ratio;
-          canvas.height = viewport.height * ratio;
-          canvas.style.width = viewport.width + "px";
-          canvas.style.height = viewport.height + "px";
-          contexto.scale(ratio, ratio);
+        const contenedor =
+          document.getElementById(
+            "visorPdf"
+          );
 
-          envoltorio.appendChild(canvas);
-          contenedor.appendChild(envoltorio);
 
-          await pagina.render({ canvasContext: contexto, viewport: viewport }).promise;
+        contenedor.innerHTML =
+          "";
+
+
+        for (
+          let num = 1;
+          num <= pdf.numPages;
+          num++
+        ) {
+
+          document
+            .getElementById(
+              "estadoRender"
+            )
+            .textContent =
+            `Página ${num} de ${pdf.numPages}...`;
+
+
+          const pagina =
+            await pdf.getPage(
+              num
+            );
+
+
+          const viewportBase =
+            pagina.getViewport({
+              scale: 1
+            });
+
+
+          const ancho =
+            contenedor.clientWidth -
+            10;
+
+
+          const escala =
+            ancho /
+            viewportBase.width;
+
+
+          const viewport =
+            pagina.getViewport({
+              scale: escala
+            });
+
+
+          const envoltorio =
+            document.createElement(
+              "div"
+            );
+
+
+          envoltorio.className =
+            "pagina-pdf";
+
+
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
+
+
+          const contexto =
+            canvas.getContext(
+              "2d"
+            );
+
+
+          const ratio =
+            window.devicePixelRatio ||
+            1;
+
+
+          canvas.width =
+            viewport.width *
+            ratio;
+
+
+          canvas.height =
+            viewport.height *
+            ratio;
+
+
+          canvas.style.width =
+            viewport.width +
+            "px";
+
+
+          canvas.style.height =
+            viewport.height +
+            "px";
+
+
+          contexto.scale(
+            ratio,
+            ratio
+          );
+
+
+          envoltorio.appendChild(
+            canvas
+          );
+
+
+          contenedor.appendChild(
+            envoltorio
+          );
+
+
+          await pagina.render({
+
+            canvasContext:
+              contexto,
+
+            viewport:
+              viewport
+
+          }).promise;
+
         }
-        document.getElementById("estadoRender").classList.add("oculto");
-        setStatus("✅ PDF visible - " + pdf.numPages + " páginas", "ok");
+
+
+        document
+          .getElementById(
+            "estadoRender"
+          )
+          .classList
+          .add("oculto");
+
+
+        setStatus(
+          "✅ PDF visible - " +
+          pdf.numPages +
+          " páginas",
+          "ok"
+        );
+
+
       } catch (e) {
-        document.getElementById("estadoRender").textContent = "❌ Error al visualizar";
+
+        document
+          .getElementById(
+            "estadoRender"
+          )
+          .textContent =
+          "❌ Error al visualizar";
+
+
         console.error(e);
+
       }
+
     }
+
+
+    // ============================================================
+    // DESCARGA PDF INDIVIDUAL
+    // ============================================================
 
     function descargarPdfLocal() {
-      if (!pdfBase64Memoria) {
-        setStatus("⚠️ No hay PDF", "err");
+
+      if (
+        !pdfBase64Memoria
+      ) {
+
+        setStatus(
+          "⚠️ No hay PDF",
+          "err"
+        );
+
         return;
+
       }
-      const link = document.createElement("a");
-      link.href = "data:application/pdf;base64," + pdfBase64Memoria;
-      link.download = nombrePdfActual;
-      document.body.appendChild(link);
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      link.href =
+        "data:application/pdf;base64," +
+        pdfBase64Memoria;
+
+
+      link.download =
+        nombrePdfActual;
+
+
+      document.body
+        .appendChild(
+          link
+        );
+
+
       link.click();
-      document.body.removeChild(link);
-      setStatus("✅ Descargando: " + nombrePdfActual, "ok");
+
+
+      document.body
+        .removeChild(
+          link
+        );
+
+
+      setStatus(
+        "✅ Descargando: " +
+        nombrePdfActual,
+        "ok"
+      );
+
     }
+
+
+    // ============================================================
+    // CERRAR VISOR
+    // ============================================================
 
     function cerrarVisor() {
-      document.getElementById("panelPdf").classList.add("oculto");
-      document.getElementById("visorPdf").innerHTML = "";
-      bloquearBotones(false);
-      setStatus("✅ Visor cerrado - Puedes generar otra ficha", "ok");
+
+      document
+        .getElementById(
+          "panelPdf"
+        )
+        .classList
+        .add("oculto");
+
+
+      document
+        .getElementById(
+          "visorPdf"
+        )
+        .innerHTML =
+        "";
+
+
+      bloquearBotones(
+        false
+      );
+
+
+      setStatus(
+        "✅ Visor cerrado - Puedes generar otra ficha",
+        "ok"
+      );
+
     }
 
-    function base64ABytes(base64) {
-      const binario = atob(base64);
-      const bytes = new Uint8Array(binario.length);
-      for (let i = 0; i < binario.length; i++) {
-        bytes[i] = binario.charCodeAt(i);
+
+    // ============================================================
+    // BASE64 A BYTES
+    // ============================================================
+
+    function base64ABytes(
+      base64
+    ) {
+
+      const binario =
+        atob(
+          base64
+        );
+
+
+      const bytes =
+        new Uint8Array(
+          binario.length
+        );
+
+
+      for (
+        let i = 0;
+        i < binario.length;
+        i++
+      ) {
+
+        bytes[i] =
+          binario.charCodeAt(
+            i
+          );
+
       }
+
+
       return bytes;
+
     }
 
-    window.onload = inicializar;
+
+    // ============================================================
+    // INICIO
+    // ============================================================
+
+    window.onload =
+      inicializar;
+
   </script>
+
 </body>
 </html>
