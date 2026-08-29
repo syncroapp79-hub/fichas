@@ -143,7 +143,7 @@
 
         <div class="botonera">
           <button id="btnTodo" class="primary" onclick="generarTodo()">📄 Generar Ficha</button>
-          
+          <button id="btnMaterias" class="success" onclick="cargarMaterias()">📚 Cargar Materias</button>
         </div>
       </div>
 
@@ -709,7 +709,7 @@
         }
       } catch (err) {
         document.getElementById("btnMaterias").disabled = false;
-        document.getElementById("btnMaterias").textContent = "📚 ";
+        document.getElementById("btnMaterias").textContent = "📚 Cargar Materias";
         setStatus("❌ " + err.message, "err");
         console.error(err);
       }
